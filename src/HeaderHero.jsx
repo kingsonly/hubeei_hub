@@ -4,7 +4,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 
 function HeaderHero(props) {
-    const { imageUrl, handleOpen, id } = props
+    const { imageUrl, handleOpen, id, } = props
     const cardStyle = {
         backgroundImage: `url(${imageUrl})`,
         backgroundSize: '100% 100%',
