@@ -5,6 +5,7 @@ import Card from './Card';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import AppModal from './AppModal';
+import Contents from './contents';
 
 const responsive = {
   superLargeDesktop: {
@@ -45,30 +46,32 @@ function Main() {
           <div className="bg-yellow-500 p-8 rounded-lg shadow-lg  w-[80%]">
             <h2 className='text-center'>Title {work}</h2>
           </div>
-          <div className="bg-yellow-500 p-8 rounded-lg shadow-lg w-[80%] h-[40%]">
-            <h2 className='text-center'>Main content</h2>
-          </div>
-          <h3 className="bg-yellow-500 p-8 rounded-lg shadow-lg w-[80%] text-center">Text Description</h3>
-          <div className="bg-yellow-500 p-8 rounded-lg shadow-lg w-[80%] ">
-            <h2 className='text-center'>Engagement</h2>
-          </div>
-          <div className="bg-yellow-500 p-8 rounded-lg shadow-lg w-[80%] h-[40%]">
-            <h2 className='text-center'>Things and Things</h2>
-          </div>
-          <div className=" rounded-lg shadow-lg w-[80%] h-[40%] border-2 border-rose-500">
-            <Carousel responsive={responsive} infinite={true} keyBoardControl={true} >
-              <Card handleOpen={handleOpen} title={'Image'} id={1} imageUrl={require('./Images/life.jpg')} />
-              <Card handleOpen={handleOpen} title={'Image'} id={1} imageUrl={require('./Images/couple.jpg')} />
-              <Card handleOpen={handleOpen} title={'Image'} id={1} imageUrl={require('./Images/Building-4.jpg')} />
-              <Card handleOpen={handleOpen} title={'Image'} id={1} imageUrl={require('./Images/Building-9.jpg')} />
-              <Card handleOpen={handleOpen} title={'Image'} id={1} imageUrl={require('./Images/Building-10.jpg')} />
-              <Card handleOpen={handleOpen} title={'Image'} id={1} imageUrl={require('./Images/Building-11.jpg')} />
-            </Carousel>
+          <div className="bg-yellow-500 p-8 rounded-lg shadow-lg w-[100%] h-[100%]" style={{ overflowY: 'auto' }}>
+            <div className='text-center w-[100%] h-[100%] ml-15 border-2 border-rose-500 '>
+              <Contents data={{ file: { type: "audio", file: "" } }} />
+            </div>
+
+            <h3 className="bg-yellow-500 p-8 rounded-lg shadow-lg w-[80%] text-center">Text Description</h3>
+            <div className="bg-yellow-500 p-8 rounded-lg shadow-lg w-[80%] ">
+              <h2 className='text-center'>Engagement</h2>
+            </div>
+            <div className="bg-yellow-500 p-8 rounded-lg shadow-lg w-[80%] h-[40%]">
+              <h2 className='text-center'>Things and Things</h2>
+            </div>
+            <div className=" rounded-lg shadow-lg w-[80%] h-[40%] border-2 border-rose-500">
+              <Carousel responsive={responsive} infinite={true} keyBoardControl={true} >
+                <Card handleOpen={handleOpen} title={'Image'} id={1} imageUrl={require('./Images/life.jpg')} />
+                <Card handleOpen={handleOpen} title={'Image'} id={1} imageUrl={require('./Images/couple.jpg')} />
+                <Card handleOpen={handleOpen} title={'Image'} id={1} imageUrl={require('./Images/Building-4.jpg')} />
+                <Card handleOpen={handleOpen} title={'Image'} id={1} imageUrl={require('./Images/Building-9.jpg')} />
+                <Card handleOpen={handleOpen} title={'Image'} id={1} imageUrl={require('./Images/Building-10.jpg')} />
+                <Card handleOpen={handleOpen} title={'Image'} id={1} imageUrl={require('./Images/Building-11.jpg')} />
+              </Carousel>
+            </div>
           </div>
         </div>
-
       </AppModal>
-      <Slide handleOpen={handleOpen}/>
+      <Slide handleOpen={handleOpen} />
       <SideIcons />
       <div className='relative z-10 w-[86%]' style={{ margin: "-80px auto" }}>
         <div>

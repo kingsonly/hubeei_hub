@@ -31,6 +31,15 @@ const Cards = ({ title, imageUrl, id, handleClose,
         setIsLiked(!isLiked);
     };
 
+    const handleCardClick = (e) => {
+        e.stopPropagation();
+        if (shareIcon) {
+            closeShareDialog()
+        } else {
+            handleOpen(id);
+        }
+    }
+
 
     const responsive = {
         superLargeDesktop: {
@@ -57,7 +66,7 @@ const Cards = ({ title, imageUrl, id, handleClose,
     return (
         <div className=''>
 
-            <div onClick={() => handleOpen(id)} className={`relative h-[200px] bg-no-repeat  border  w-[300px] group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10 border-fuchsia-800  border-2 border-black`} style={cardStyle}>
+            <div onClick= {handleCardClick} className={`relative h-[200px] bg-no-repeat  border  w-[300px] group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10 border-fuchsia-800  border-2 border-black`} style={cardStyle}>
 
                 <div   >
                     <div className='w-6px h-10px ' >
@@ -69,17 +78,17 @@ const Cards = ({ title, imageUrl, id, handleClose,
                             </div>
                         </div>
                     </div>
-                    <div className=' absolute bottom-0 right-0 '>
+                    <div className=' absolute bottom-0 right-0 mb-6 w-6px mr-4'>
                         {!shareIcon ? (
-                            <div className='bg-slate-600 w-[100%]  flex flex justify-between border-2 border-rose-500'>
-                                <div className='mr-0'>
-                                    <div className='border-2 border-rose-500'>
+                            <div className='bg-slate-600 w-[100%]  flex flex justify-between rounded-lg '>
+                                <div className='ml-1 mt-2 mr-2 mb-2'>
+                                    <div className=''>
                                         <FavoriteRoundedIcon onClick={(e) => toggleLike(e)}style={{ color: isLiked ? 'yellow' : 'inherit' }} />
                                     </div>
                                 </div>
 
-                                <div className='ml-0'>
-                                    <div className='bg-[white] '><ShareRoundedIcon onClick={openShareDialog} /></div>
+                                <div className='ml-1 mt-2 mr-2 mb-2 rounded-lg '>
+                                    <div className='bg-[white] rounded-md '><ShareRoundedIcon onClick={openShareDialog} /></div>
                                 </div>
                             </div>
                         ) : (

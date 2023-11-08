@@ -16,13 +16,13 @@ function SideIcons() {
     
       return (
         <div className="" style={cardStyle}>
-          <div className='fixed top-24 left-0 right-0 w-[40px] z-30 bg-[#000]/80'>
-            <div className={iconSize}><HomeIcon className='text-white cursor-pointer' /></div>
-            <div className={iconSize}><SearchIcon className='text-white cursor-pointer' /></div>
-            <div className={iconSize}><FavoriteBorderIcon className='text-white cursor-pointer' /></div>
-            <div className={iconSize}><NotificationsNoneIcon className='text-white cursor-pointer' /></div>
-            <div className={iconSize}><AccountCircleIcon className='text-white cursor-pointer' /></div>
-            <div className={iconSize}><ExitToAppRoundedIcon className='text-white cursor-pointer' /></div>
+          <div className='fixed top-24 left-0 right-0 w-[50px] z-30 bg-[#000]/80 rounded'>
+            <div className={iconSize}><HomeIcon className='text-white cursor-pointer ml-2 mt-3' /></div>
+            <div className={iconSize}><SearchIcon className='text-white cursor-pointer ml-2 mt-2' /></div>
+            <div className={iconSize}><FavoriteBorderIcon className='text-white cursor-pointer ml-2 mt-2' /></div>
+            <div className={iconSize}><NotificationsNoneIcon className='text-white cursor-pointer ml-2 mt-2' /></div>
+            <div className={iconSize}><AccountCircleIcon className='text-white cursor-pointer ml-2 mt-2' /></div>
+            <div className={iconSize}><ExitToAppRoundedIcon className='text-white cursor-pointer ml-2 mt-2' /></div>
           </div>
         </div>
       );
