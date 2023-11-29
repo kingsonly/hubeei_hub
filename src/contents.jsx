@@ -7,20 +7,19 @@ import Engagement from './engagement';
 
 const Contents = ({ data }) => {
 
-  const audioFileURL = data.file.audio;
 
   const renderFileContent = () => {
 
 
-    switch (data.file.type) {
+    switch (data.content_type) {
       case 'audio':
-        return <Audio audioFileURL="/Images/Gyakie-Forever-(TrendyBeatz,com).mp3" />;
+        return <Audio data={data} />;
       case 'video':
-        return <Video />;
+        return <Video data={data} />;
       case 'pdf':
-        return <Pdfdisplay />;
+        return <Pdfdisplay data={data} />;
       case 'engagement':
-        return <Engagement />
+        return <Engagement data={data} />
 
     }
   }

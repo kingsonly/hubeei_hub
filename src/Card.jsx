@@ -1,15 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import ShareDialog from './ShareIcons';
 import 'react-multi-carousel/lib/styles.css';
+import axios from 'axios';
+
+
 
 
 const Cards = ({ title, imageUrl, id, handleClose,
-    handleOpen }) => {
+    handleOpen,liked }) => {
     const [shareIcon, setShareIcon] = useState(false);
-    const [isLiked, setIsLiked] = useState(false);
+    const [isLiked, setIsLiked] = useState(liked);
 
+ 
+
+    const postUserToServer = async () => {
+        const user = localStorage.getItem('user');
+        const headers = {
+            'user': user,
+        };
+
+        try {
+            const response = await axios.get('https://api.hubeei.skillzserver.com/api/content/like-un-like/' + id, { headers });
+            if (response.data.status == 'success') {
+                return true
+            }
+        } catch (error) {
+            console.error('Error posting user to server:', error);
+            return false
+        }
+    };
+
+    const toggleLike = async (e) => {
+
+
+        e.stopPropagation();
+
+        const data = await postUserToServer()
+        if (data) {
+
+            setIsLiked(true);
+
+        }
+
+
+    };
+
+    const toggleUnLike = async (e) => {
+
+
+        e.stopPropagation();
+
+        const data = await postUserToServer()
+        if (data) {
+
+            setIsLiked(false);
+
+        }
+
+
+    };
 
     const cardStyle = {
         backgroundImage: `url(${imageUrl})`,
@@ -26,10 +77,7 @@ const Cards = ({ title, imageUrl, id, handleClose,
         setShareIcon(false);
     };
 
-    const toggleLike = (e) => {
-        e.stopPropagation();
-        setIsLiked(!isLiked);
-    };
+
 
     const handleCardClick = (e) => {
         e.stopPropagation();
@@ -66,7 +114,7 @@ const Cards = ({ title, imageUrl, id, handleClose,
     return (
         <div className=''>
 
-            <div onClick= {handleCardClick} className={`relative h-[200px] bg-no-repeat  border  w-[300px] group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10 border-fuchsia-800  border-2 border-black`} style={cardStyle}>
+            <div onClick={handleCardClick} className={`relative h-[200px] bg-no-repeat  border  w-[300px] group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10 border-fuchsia-800  border-2 border-blue`} style={cardStyle}>
 
                 <div   >
                     <div className='w-6px h-10px ' >
@@ -83,7 +131,10 @@ const Cards = ({ title, imageUrl, id, handleClose,
                             <div className='bg-slate-600 w-[100%]  flex flex justify-between rounded-lg '>
                                 <div className='ml-1 mt-2 mr-2 mb-2'>
                                     <div className=''>
-                                        <FavoriteRoundedIcon onClick={(e) => toggleLike(e)}style={{ color: isLiked ? 'yellow' : 'inherit' }} />
+                                        {
+                                            isLiked ? <FavoriteRoundedIcon onClick={(e) => toggleUnLike(e)} style={{ color: 'yellow' }} /> : <FavoriteRoundedIcon onClick={(e) => toggleLike(e)} style={{ color: isLiked ? 'yellow' : 'inherit' }} />
+                                        }
+
                                     </div>
                                 </div>
 
@@ -98,7 +149,7 @@ const Cards = ({ title, imageUrl, id, handleClose,
                 </div>
 
             </div>
-            <div>Extra time</div>
+            <div className='text-[#fff]'>{title}</div>
 
         </div>
     );
