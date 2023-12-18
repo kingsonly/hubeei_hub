@@ -7,8 +7,7 @@ import 'react-multi-carousel/lib/styles.css';
 import AppModal from './AppModal';
 import Contents from './contents';
 import axios from 'axios';
-
-
+import RankIcon from './RankIcon';
 
 const responsive = {
   superLargeDesktop: {
@@ -30,27 +29,39 @@ const responsive = {
   }
 };
 
-function Main() {
+function Main({ Rank, height, width }) {
   const [open, setOpen] = useState(false);
   const [selectedContent, setSelectedContent] = useState();
   const [category, setCategory] = useState([])
   const [work, setWork] = useState(0);
   const [image, setImage] = useState(null);
+  const [topContent, setTopContent] = useState([]);
 
   useEffect(() => {
-    const createNewUser = () => {
-      localStorage.setItem('user', UniqueId());
-    }
-
-    const user = localStorage.getItem('user');
-
-    if (!user) {
-      createNewUser();
-
-    }
+    createNewUser()
     fetchAPI();
     fetchImage();
+    fetchTopContent();
   }, []);
+
+  const createNewUser = () => {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      localStorage.setItem('user', UniqueId());
+    }
+  }
+  const fetchTopContent = async () => {
+    try {
+      const response = await axios.get('https://api.hubeei.skillzserver.com/api/content/get-top-ten-views/4')
+      if (response.data.status == "success") {
+        setTopContent(response.data.data);
+        console.log('Top Content Data:', response.data);
+      }
+
+    } catch (error) {
+      console.error('Error fetching top content:', error);
+    }
+  };
 
   const handleSearch = async (searchItem) => {
 
@@ -84,6 +95,8 @@ function Main() {
     setSelectedContent(items)
     setOpen(true);
   };
+
+
 
   const fetchAPI = async () => {
     const user = localStorage.getItem('user');
@@ -124,9 +137,6 @@ function Main() {
     return 'guest_' + Date.now();
   }
 
-  const createNewUser = () => {
-    localStorage.setItem('user', UniqueId());
-  };
 
   return (
     <div className='bg-black border-2 border-yellow-500 h-[100%]'>
@@ -137,10 +147,12 @@ function Main() {
             <div className=" p-8 rounded-lg shadow-lg  w-[80%]">
               <h2 className='text-center'>{selectedContent ? selectedContent.name : 'Loading...'}</h2>
             </div>
+
             <div className=" p-8 rounded-lg shadow-lg w-[100%] h-[100%]" style={{ overflowY: 'auto' }}>
               <div className='text-center w-[70%] h-[100%]  mr-[15] border-2 border-rose-500'>
                 <Contents data={selectedContent} />
               </div>
+
               <div className=" p-8 rounded-lg shadow-lg w-[70%] border-2 border-yellow-500 ">
                 <div className='text-yellow-400  border-2 border-yellow-500 flex flex-col items-start flex flex justify-between'>
                   <h1>Description</h1>
@@ -173,20 +185,40 @@ function Main() {
         <SideIcons handleSearch={handleSearch} />
       </div>
       <div className=' relative z-10 w-[100%]' >
-      <div className=' w-[86%]' style={{ margin: "-20px auto" }}>
-        {category.length > 0 ? category.map((categoryItems) => {
-          return <div>
-            <h1 className='text-white'>{categoryItems.name} </h1>
-            <Carousel responsive={responsive} infinite={true} keyBoardControl={true} >
-              {categoryItems.content.map((items) => {
-                return <Card handleOpen={() => handleOpen(items)} title={items.name} id={items.id} imageUrl={items.thumbnail} liked={items.like} />
-              })
-              }
-            </Carousel>
-          </div>
-        }) : console.log('khkh', category)}
+        <div className=''>
+        
+          <div className='ml-10'>
+            <div className=''>
+           
+              <Carousel responsive={responsive} infinite={true} keyBoardControl={true}>
+                {topContent.map((value, i,f) => <div>
+                  {console.log("Hi this na so we su",i)}
+                   <Card type={true} Rank={i+1} handleOpen={() => handleOpen(value)} content={value.name} id={value.id} imageUrl={`https://api.hubeei.skillzserver.com/public${value.thumbnail}`} />
+                   </div>
+                )}
 
-      </div>
+              </Carousel>
+              
+            </div>
+          </div>
+        </div>
+        <div className=' w-[86%]' style={{ margin: "-20px auto" }}>
+          {category.length > 0 ? category.map((categoryItems) => {
+            return <div>
+              <h1 className='text-white'>{categoryItems.name} </h1>
+              <Carousel responsive={responsive} infinite={true} keyBoardControl={true}>
+
+                {categoryItems.content.map((items, i) => {
+
+                  return <Card handleOpen={() => handleOpen(items)} title={items.name} id={items.id} imageUrl={`https://api.hubeei.skillzserver.com/public${items.thumbnail}`} liked={items.like} />
+
+                })
+                }
+              </Carousel>
+            </div>
+          }) : console.log('khkh', category)}
+
+        </div>
       </div>
 
 

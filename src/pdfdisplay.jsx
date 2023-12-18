@@ -2,7 +2,7 @@ import React from "react";
 
 
 
-function Pdfdisplay() {
+function Pdfdisplay({data}) {
 
     return (
         <div>
