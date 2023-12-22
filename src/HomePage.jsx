@@ -8,6 +8,10 @@ import AppModal from "./AppModal";
 import Contents from "./contents";
 import axios from "axios";
 import RankIcon from "./RankIcon";
+import StarRateIcon from "@mui/icons-material/StarRate";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { Box, Input, IconButton, Button } from "@mui/material";
 
 const responsive = {
   superLargeDesktop: {
@@ -152,48 +156,71 @@ function Main({ Rank, height, width }) {
     return "guest_" + Date.now();
   };
 
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "100%",
+
+    p: 4,
+    height: 400,
+    overflow: "auto",
+  };
+
   return (
     <div className="bg-black border-2 border-yellow-500 h-[100%]">
-      <AppModal open={open} handleClose={handleClose}>
-        {selectedContent != null ? (
-          <div className="fixed inset-0 flex flex-col items-center justify-center   space-y-[20px] h-[100%] w-[100%] mt-4">
-            <div className=" p-8 rounded-lg shadow-lg  w-[80%]">
-              <h2 className="text-center">
-                {selectedContent ? selectedContent.name : "Loading..."}
-              </h2>
-            </div>
-
-            <div
-              className=" p-8 rounded-lg shadow-lg w-[100%] h-[100%]"
-              style={{ overflowY: "auto" }}
-            >
-              <div className="text-center w-[70%] h-[100%]  mr-[15] border-2 border-rose-500">
+      <AppModal
+        open={open}
+        handleClose={handleClose}
+        style={{ backdropFilter: "blur(1px)" }}
+      >
+        <Box>
+          {selectedContent != null ? (
+            <div className="w-[100%]">
+              <div className="w-[100%] text-center mb-4">
+                <h2 className="text-[50px] text-[#DCD427] uppercase">
+                  {selectedContent.name}
+                </h2>
+              </div>
+              <div className="h-[600px]">
                 <Contents data={selectedContent} />
               </div>
-
-              <div className=" p-8 rounded-lg shadow-lg w-[70%] border-2 border-yellow-500 ">
-                <div className="text-yellow-400  border-2 border-yellow-500 flex flex-col items-start flex flex justify-between">
-                  <h1>Description</h1>
-                  <h3 className="text-white text-left">
-                    {selectedContent.content_description !== null
-                      ? selectedContent.content_description
-                      : "No Description"}
-                  </h3>
-                  <div className="">
-                    <h1>hjfjj </h1>
+              <div className="flex justify-end mt-2">
+                <div className="flex px-2 justify-between rounded-full border-2 border-[#DCD427] min-w-[70px]">
+                  <div>
+                    <VisibilityIcon className="text-[#DCD427]" />
                   </div>
+                  <div className="text-[#fff]">{selectedContent.views}</div>
+                </div>
+                <div className="flex px-2 justify-between rounded-full border-2 border-[#DCD427] min-w-[70px] mx-4  ">
+                  <div>
+                    <FavoriteIcon className="text-[#DCD427]" />
+                  </div>
+                  <div className="text-[#fff]">0</div>
+                </div>
+                {selectedContent.sportlight > 0 ?? (
+                  <div>
+                    <StarRateIcon className="text-[#DCD427]" />
+                  </div>
+                )}
+              </div>
+              <div className="mt-4">
+                <div>
+                  <h1 className="mt-2 text-[#DCD427] text-[28px] font-roboto uppercase">
+                    Description
+                  </h1>
+                </div>
+                <div className="text-[22px] text-[#fff] font-roboto">
+                  {selectedContent.content_description}
                 </div>
               </div>
 
-              <div className=" p-8 rounded-lg shadow-lg w-[80%] ">
-                <h2 className="text-center">Engagement</h2>
-              </div>
-              <div className=" p-8 rounded-lg shadow-lg w-[80%] h-[40%]">
-                <h2 className="text-center">Things and Things</h2>
-              </div>
+              <div>list of likes</div>
+              <div>engagement</div>
             </div>
-          </div>
-        ) : null}
+          ) : null}
+        </Box>
       </AppModal>
       <div className="  ">
         <Slide handleOpen={handleOpen} data={image} />
