@@ -273,6 +273,7 @@ function Main({ Rank, height, width }) {
               setSearchIcon={setSearchIconUpdate}
               setSearchIconClose={setSearchIconClose}
               loaderStatus={searchLoaderStatus}
+              goHome={fetchAPI}
             />
           </div>
           <div className=" relative z-10 w-[100%]">
