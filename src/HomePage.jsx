@@ -11,7 +11,15 @@ import RankIcon from "./RankIcon";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Box, Input, IconButton, Button } from "@mui/material";
+import logo from "./Images/logo.png";
+import {
+  Box,
+  Input,
+  IconButton,
+  Button,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 
 const responsive = {
   superLargeDesktop: {
@@ -34,6 +42,7 @@ const responsive = {
 };
 
 function Main({ Rank, height, width }) {
+  const [initLoader, setInitLoader] = useState(false);
   const [open, setOpen] = useState(false);
   const [searchIcon, setSearchIcon] = useState(false);
   const [searchLoaderStatus, setSearchLoaderStatus] = useState(false);
@@ -44,10 +53,7 @@ function Main({ Rank, height, width }) {
   const [topContent, setTopContent] = useState([]);
 
   useEffect(() => {
-    createNewUser();
-    fetchAPI();
-    fetchImage();
-    fetchTopContent();
+    getHubSelected();
   }, []);
 
   const setSearchIconUpdate = () => {
@@ -66,9 +72,10 @@ function Main({ Rank, height, width }) {
   };
 
   const fetchTopContent = async () => {
+    let hub = localStorage.getItem("hub");
     try {
       const response = await axios.get(
-        "https://api.hubeei.skillzserver.com/api/content/get-top-ten-views/4"
+        `https://api.hubeei.skillzserver.com/api/content/get-top-ten-views/${hub}`
       );
       if (response.data.status == "success") {
         setTopContent(response.data.data);
@@ -80,10 +87,11 @@ function Main({ Rank, height, width }) {
   };
 
   const handleSearch = async (searchItem) => {
+    let hub = localStorage.getItem("hub");
     setSearchLoaderStatus(true);
     try {
       const response = await fetch(
-        "https://api.hubeei.skillzserver.com/api/content/search/4",
+        `https://api.hubeei.skillzserver.com/api/content/search/${hub}`,
         {
           method: "POST",
           headers: {},
@@ -109,6 +117,32 @@ function Main({ Rank, height, width }) {
     }
   };
 
+  const getHubSelected = async () => {
+    let currentUrl = window.location.href;
+    let hub = currentUrl.split(".")[0].split("://")[1];
+    // make an axos call to server to get the id of the hub, and also get hub settings
+    await axios
+      .get(
+        `https://api.hubeei.skillzserver.com/api/hub/get-users-hubs-by-hub-name/${hub}`
+      )
+      .then((response) => {
+        let data = response.data;
+        if (data.status == "success") {
+          // save the hub id to to local storage
+          localStorage.setItem("hub", data.data.id);
+          createNewUser();
+          fetchAPI();
+          fetchImage();
+          fetchTopContent();
+          setInitLoader(true);
+        } else {
+          console.log("something weant wrong");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
   const handleClose = () => {
     setOpen(false);
   };
@@ -124,8 +158,9 @@ function Main({ Rank, height, width }) {
     const headers = {
       user: user,
     };
+    let hub = localStorage.getItem("hub");
     await axios
-      .get("https://api.hubeei.skillzserver.com/api/category-content/4", {
+      .get(`https://api.hubeei.skillzserver.com/api/category-content/${hub}`, {
         headers,
       })
       .then((response) => {
@@ -140,9 +175,10 @@ function Main({ Rank, height, width }) {
   };
 
   const fetchImage = async () => {
+    let hub = localStorage.getItem("hub");
     await axios
       .get(
-        "https://api.hubeei.skillzserver.com/api/content/get-spotlight-content/4"
+        `https://api.hubeei.skillzserver.com/api/content/get-spotlight-content/${hub}`
       )
       .then((response) => {
         let data = response.data;
@@ -172,127 +208,154 @@ function Main({ Rank, height, width }) {
   };
 
   return (
-    <div className="bg-black border-2 border-yellow-500 h-[100%]">
-      <AppModal
-        open={open}
-        handleClose={handleClose}
-        style={{ backdropFilter: "blur(1px)" }}
-      >
-        <Box>
-          {selectedContent != null ? (
-            <div className="w-[100%]">
-              <div className="w-[100%] text-center mb-4">
-                <h2 className="text-[50px] text-[#DCD427] uppercase">
-                  {selectedContent.name}
-                </h2>
-              </div>
-              <div className="h-[600px]">
-                <Contents data={selectedContent} />
-              </div>
-              <div className="flex justify-end mt-2">
-                <div className="flex px-2 justify-between rounded-full border-2 border-[#DCD427] min-w-[70px]">
-                  <div>
-                    <VisibilityIcon className="text-[#DCD427]" />
+    <>
+      {initLoader ? (
+        <div className="bg-black border-2 border-yellow-500 h-[100%]">
+          <AppModal
+            open={open}
+            handleClose={handleClose}
+            style={{ backdropFilter: "blur(1px)" }}
+          >
+            <Box>
+              {selectedContent != null ? (
+                <div className="w-[100%]">
+                  <div className="w-[100%] text-center mb-4">
+                    <h2 className="text-[50px] text-[#DCD427] uppercase">
+                      {selectedContent.name}
+                    </h2>
                   </div>
-                  <div className="text-[#fff]">{selectedContent.views}</div>
-                </div>
-                <div className="flex px-2 justify-between rounded-full border-2 border-[#DCD427] min-w-[70px] mx-4  ">
-                  <div>
-                    <FavoriteIcon className="text-[#DCD427]" />
+                  <div className="h-[600px]">
+                    <Contents data={selectedContent} />
                   </div>
-                  <div className="text-[#fff]">0</div>
-                </div>
-                {selectedContent.sportlight > 0 ?? (
-                  <div>
-                    <StarRateIcon className="text-[#DCD427]" />
+                  <div className="flex justify-end mt-2">
+                    <div className="flex px-2 justify-between rounded-full border-2 border-[#DCD427] min-w-[70px]">
+                      <div>
+                        <VisibilityIcon className="text-[#DCD427]" />
+                      </div>
+                      <div className="text-[#fff]">{selectedContent.views}</div>
+                    </div>
+                    <div className="flex px-2 justify-between rounded-full border-2 border-[#DCD427] min-w-[70px] mx-4  ">
+                      <div>
+                        <FavoriteIcon className="text-[#DCD427]" />
+                      </div>
+                      <div className="text-[#fff]">0</div>
+                    </div>
+                    {selectedContent.sportlight > 0 ?? (
+                      <div>
+                        <StarRateIcon className="text-[#DCD427]" />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              <div className="mt-4">
-                <div>
-                  <h1 className="mt-2 text-[#DCD427] text-[28px] font-roboto uppercase">
-                    Description
-                  </h1>
-                </div>
-                <div className="text-[22px] text-[#fff] font-roboto">
-                  {selectedContent.content_description}
-                </div>
-              </div>
+                  <div className="mt-4">
+                    <div>
+                      <h1 className="mt-2 text-[#DCD427] text-[28px] font-roboto uppercase">
+                        Description
+                      </h1>
+                    </div>
+                    <div className="text-[22px] text-[#fff] font-roboto">
+                      {selectedContent.content_description}
+                    </div>
+                  </div>
 
-              <div>list of likes</div>
-              <div>engagement</div>
-            </div>
-          ) : null}
-        </Box>
-      </AppModal>
-      <div className="  ">
-        <Slide handleOpen={handleOpen} data={image} />
-      </div>
-      <div className="fixed left-0 top-1/2 transform -translate-y-1/2 rounded z-20 ">
-        <SideIcons
-          handleSearch={handleSearch}
-          searchIcon={searchIcon}
-          setSearchIcon={setSearchIconUpdate}
-          setSearchIconClose={setSearchIconClose}
-          loaderStatus={searchLoaderStatus}
-        />
-      </div>
-      <div className=" relative z-10 w-[100%]">
-        <div className="">
-          <div className="ml-10">
+                  <div>list of likes</div>
+                  <div>engagement</div>
+                </div>
+              ) : null}
+            </Box>
+          </AppModal>
+          <div className="  ">
+            <Slide handleOpen={handleOpen} data={image} />
+          </div>
+          <div className="fixed left-0 top-1/2 transform -translate-y-1/2 rounded z-20 ">
+            <SideIcons
+              handleSearch={handleSearch}
+              searchIcon={searchIcon}
+              setSearchIcon={setSearchIconUpdate}
+              setSearchIconClose={setSearchIconClose}
+              loaderStatus={searchLoaderStatus}
+            />
+          </div>
+          <div className=" relative z-10 w-[100%]">
             <div className="">
-              <Carousel
-                responsive={responsive}
-                infinite={true}
-                keyBoardControl={true}
-              >
-                {topContent.map((value, i, f) => (
-                  <div>
-                    {console.log("Hi this na so we su", i)}
-                    <Card
-                      type={true}
-                      Rank={i + 1}
-                      handleOpen={() => handleOpen(value)}
-                      content={value.name}
-                      id={value.id}
-                      imageUrl={`https://api.hubeei.skillzserver.com/public${value.thumbnail}`}
-                    />
-                  </div>
-                ))}
-              </Carousel>
+              <div className="ml-10">
+                <div className="">
+                  <Carousel
+                    responsive={responsive}
+                    infinite={true}
+                    keyBoardControl={true}
+                  >
+                    {topContent.map((value, i, f) => (
+                      <div>
+                        {console.log("Hi this na so we su", i)}
+                        <Card
+                          type={true}
+                          Rank={i + 1}
+                          handleOpen={() => handleOpen(value)}
+                          content={value.name}
+                          id={value.id}
+                          imageUrl={`https://api.hubeei.skillzserver.com/public${value.thumbnail}`}
+                        />
+                      </div>
+                    ))}
+                  </Carousel>
+                </div>
+              </div>
+            </div>
+            <div className=" w-[86%]" style={{ margin: "-20px auto" }}>
+              {category.length > 0
+                ? category.map((categoryItems) => {
+                    return (
+                      <div>
+                        <h1 className="text-white">{categoryItems.name} </h1>
+                        <Carousel
+                          responsive={responsive}
+                          infinite={true}
+                          keyBoardControl={true}
+                        >
+                          {categoryItems.content.map((items, i) => {
+                            return (
+                              <Card
+                                handleOpen={() => handleOpen(items)}
+                                title={items.name}
+                                id={items.id}
+                                imageUrl={`https://api.hubeei.skillzserver.com/public${items.thumbnail}`}
+                                liked={items.like}
+                              />
+                            );
+                          })}
+                        </Carousel>
+                      </div>
+                    );
+                  })
+                : console.log("khkh", category)}
             </div>
           </div>
         </div>
-        <div className=" w-[86%]" style={{ margin: "-20px auto" }}>
-          {category.length > 0
-            ? category.map((categoryItems) => {
-                return (
-                  <div>
-                    <h1 className="text-white">{categoryItems.name} </h1>
-                    <Carousel
-                      responsive={responsive}
-                      infinite={true}
-                      keyBoardControl={true}
-                    >
-                      {categoryItems.content.map((items, i) => {
-                        return (
-                          <Card
-                            handleOpen={() => handleOpen(items)}
-                            title={items.name}
-                            id={items.id}
-                            imageUrl={`https://api.hubeei.skillzserver.com/public${items.thumbnail}`}
-                            liked={items.like}
-                          />
-                        );
-                      })}
-                    </Carousel>
-                  </div>
-                );
-              })
-            : console.log("khkh", category)}
+      ) : (
+        <div className="bg-[#000] w-[100%] h-[100vh] flex justify-center items-center">
+          <div className="w-[60%] flex justify-center h-[60%] items-center">
+            <div>
+              <div className="flex justify-center mb-24">
+                <img src={logo} className="w-[250px]" />
+              </div>
+              <div className="mb-8">
+                <Typography variant="h5" className="text-white">
+                  Seamlessly white-label your Netflix-style content hub as part
+                  of your brand. Boost audience engagement and brand awareness
+                  instantly.
+                </Typography>
+              </div>
+              <div className="text-[#DCD427]">
+                <Typography variant="h5">
+                  Loading Hub ....{" "}
+                  <CircularProgress size={28} sx={{ color: "#DCD427" }} />
+                </Typography>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 
