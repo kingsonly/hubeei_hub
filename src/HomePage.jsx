@@ -53,15 +53,18 @@ function Main({ Rank, height, width }) {
   const setSearchIconUpdate = () => {
     setSearchIcon(true);
   };
+
   const setSearchIconClose = () => {
     setSearchIcon(false);
   };
+
   const createNewUser = () => {
     const user = localStorage.getItem("user");
     if (!user) {
       localStorage.setItem("user", UniqueId());
     }
   };
+
   const fetchTopContent = async () => {
     try {
       const response = await axios.get(
