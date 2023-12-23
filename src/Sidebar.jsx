@@ -15,6 +15,7 @@ function SideIcons({
   setSearchIconClose,
   loaderStatus,
   goHome,
+  goToLiked,
 }) {
   const [searchItem, setSearchItem] = useState("");
 
@@ -56,7 +57,7 @@ function SideIcons({
             onClick={setSearchIcon}
           />
         </div>
-        <div className={iconSize}>
+        <div className={iconSize} onClick={() => goToLiked()}>
           <FavoriteBorderIcon className="text-white cursor-pointer ml-2 mt-2" />
         </div>
         <div className={iconSize}>
