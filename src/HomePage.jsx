@@ -42,6 +42,7 @@ const responsive = {
 };
 
 function Main({ Rank, height, width }) {
+  const [defaultContent, setDefaultContent] = useState(false);
   const [initLoader, setInitLoader] = useState(false);
   const [open, setOpen] = useState(false);
   const [searchIcon, setSearchIcon] = useState(false);
@@ -167,6 +168,28 @@ function Main({ Rank, height, width }) {
         let data = response.data;
         if (data.status == "success") {
           setCategory(response.data.data);
+          setDefaultContent(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+
+  const getUsersLikedContent = async () => {
+    const user = localStorage.getItem("user");
+    const headers = {
+      user: user,
+    };
+    await axios
+      .get(`https://api.hubeei.skillzserver.com/api/content/liked/${user}`, {
+        headers,
+      })
+      .then((response) => {
+        let data = response.data;
+        if (data.status == "success") {
+          setCategory(response.data.data);
+          setDefaultContent(false);
         }
       })
       .catch((error) => {
@@ -210,7 +233,7 @@ function Main({ Rank, height, width }) {
   return (
     <>
       {initLoader ? (
-        <div className="bg-black border-2 border-yellow-500 h-[100%]">
+        <div className="bg-black pb-10  ">
           <AppModal
             open={open}
             handleClose={handleClose}
@@ -273,9 +296,11 @@ function Main({ Rank, height, width }) {
               setSearchIcon={setSearchIconUpdate}
               setSearchIconClose={setSearchIconClose}
               loaderStatus={searchLoaderStatus}
+              goHome={fetchAPI}
+              goToLiked={getUsersLikedContent}
             />
           </div>
-          <div className=" relative z-10 w-[100%]">
+          <div className=" relative z-10 w-[100%] ">
             <div className="">
               <div className="ml-10">
                 <div className="">
@@ -301,34 +326,67 @@ function Main({ Rank, height, width }) {
                 </div>
               </div>
             </div>
-            <div className=" w-[86%]" style={{ margin: "-20px auto" }}>
-              {category.length > 0
-                ? category.map((categoryItems) => {
+            {defaultContent ? (
+              <div className=" w-[86%]" style={{ margin: "-20px auto" }}>
+                {category.length > 0
+                  ? category.map((categoryItems) => {
+                      return categoryItems.content.length > 0 ? (
+                        <div>
+                          <h1 className="text-white">{categoryItems.name} </h1>
+                          <Carousel
+                            responsive={responsive}
+                            infinite={true}
+                            keyBoardControl={true}
+                          >
+                            {categoryItems.content.map((items, i) => {
+                              return (
+                                <Card
+                                  handleOpen={() => handleOpen(items)}
+                                  title={items.name}
+                                  id={items.id}
+                                  imageUrl={`https://api.hubeei.skillzserver.com/public${items.thumbnail}`}
+                                  liked={items.like}
+                                />
+                              );
+                            })}
+                          </Carousel>
+                        </div>
+                      ) : (
+                        <div>
+                          <h1 className="text-white uppercase">
+                            {categoryItems.name}{" "}
+                          </h1>
+                          <h2 className="text-white">
+                            {" "}
+                            No Available Content For this Category
+                          </h2>
+                        </div>
+                      );
+                    })
+                  : console.log("khkh", category)}
+              </div>
+            ) : (
+              <div className=" w-[86%]" style={{ margin: "-20px auto" }}>
+                <h1 className="text-white">Liked Content </h1>
+                <Carousel
+                  responsive={responsive}
+                  infinite={true}
+                  keyBoardControl={true}
+                >
+                  {category.map((items, i) => {
                     return (
-                      <div>
-                        <h1 className="text-white">{categoryItems.name} </h1>
-                        <Carousel
-                          responsive={responsive}
-                          infinite={true}
-                          keyBoardControl={true}
-                        >
-                          {categoryItems.content.map((items, i) => {
-                            return (
-                              <Card
-                                handleOpen={() => handleOpen(items)}
-                                title={items.name}
-                                id={items.id}
-                                imageUrl={`https://api.hubeei.skillzserver.com/public${items.thumbnail}`}
-                                liked={items.like}
-                              />
-                            );
-                          })}
-                        </Carousel>
-                      </div>
+                      <Card
+                        handleOpen={() => handleOpen(items)}
+                        title={items.name}
+                        id={items.id}
+                        imageUrl={`https://api.hubeei.skillzserver.com/public${items.thumbnail}`}
+                        liked={items.like}
+                      />
                     );
-                  })
-                : console.log("khkh", category)}
-            </div>
+                  })}
+                </Carousel>
+              </div>
+            )}
           </div>
         </div>
       ) : (

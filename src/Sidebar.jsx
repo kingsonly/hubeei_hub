@@ -14,6 +14,8 @@ function SideIcons({
   setSearchIcon,
   setSearchIconClose,
   loaderStatus,
+  goHome,
+  goToLiked,
 }) {
   const [searchItem, setSearchItem] = useState("");
 
@@ -44,7 +46,7 @@ function SideIcons({
   return (
     <div className="">
       <div className=" w-[50px] z-30 bg-[#000]/80 rounded">
-        <div className={iconSize}>
+        <div className={iconSize} onClick={() => goHome()}>
           <HomeIcon className="text-white cursor-pointer ml-2 mt-3" />
         </div>
         <div className={iconSize}>
@@ -55,7 +57,7 @@ function SideIcons({
             onClick={setSearchIcon}
           />
         </div>
-        <div className={iconSize}>
+        <div className={iconSize} onClick={() => goToLiked()}>
           <FavoriteBorderIcon className="text-white cursor-pointer ml-2 mt-2" />
         </div>
         <div className={iconSize}>
