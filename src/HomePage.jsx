@@ -119,6 +119,9 @@ function Main({ Rank, height, width }) {
   };
 
   const getHubSelected = async () => {
+    // check if its a shared link
+    let sharedLinkStatus = window.location.href.split("?");
+
     let currentUrl = window.location.href;
     let hub = currentUrl.split(".")[0].split("://")[1];
     // make an axos call to server to get the id of the hub, and also get hub settings
@@ -135,7 +138,11 @@ function Main({ Rank, height, width }) {
           fetchAPI();
           fetchImage();
           fetchTopContent();
-          setInitLoader(true);
+          if (sharedLinkStatus.length === 2) {
+            loadModalForSharedLink(sharedLinkStatus[1]);
+          } else {
+            setInitLoader(true);
+          }
         } else {
           console.log("something weant wrong");
         }
@@ -144,9 +151,34 @@ function Main({ Rank, height, width }) {
         console.error("Error fetching data:", error);
       });
   };
+
+  const loadModalForSharedLink = async (id) => {
+    // fetch data fron the server
+    let hub = localStorage.getItem("hub");
+    let headers = { hub: hub };
+    axios
+      .get(`https://api.hubeei.skillzserver.com/api/content/view/${id}`, {
+        headers,
+      })
+      .then((response) => {
+        if (response.data.status == "success") {
+          let data = response.data.data;
+          setSelectedContent(data);
+          setOpen(true);
+          setInitLoader(true);
+        } else {
+          setInitLoader(true);
+        }
+      })
+      .catch((error) => {
+        setInitLoader(true);
+      });
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
+
   const handleOpen = (items) => {
     let works = work;
     setWork(works + 1);
