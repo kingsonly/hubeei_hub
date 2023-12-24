@@ -4,6 +4,7 @@ import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import ShareDialog from "./ShareIcons";
 import axios from "axios";
 import RankIcon from "./RankIcon";
+import { Typography } from "@mui/material";
 
 const Cards = ({
   title,
@@ -14,6 +15,7 @@ const Cards = ({
   liked,
   type = false,
   Rank,
+  settings,
 }) => {
   const [shareIcon, setShareIcon] = useState(false);
   const [isLiked, setIsLiked] = useState(liked);
@@ -83,7 +85,7 @@ const Cards = ({
           <div className="w-[70%]">
             <div
               onClick={handleCardClick}
-              className={`relative h-[100%] bg-no-repeat group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10  mb-4 ml-0`}
+              className={`relative h-[100%] bg-no-repeat group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10  mb-2 ml-0`}
               style={cardStyle}
             >
               <div>
@@ -134,7 +136,7 @@ const Cards = ({
           <div>
             <div
               onClick={handleCardClick}
-              className={`relative h-[200px] bg-no-repeat  border  w-[300px] group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10 border-fuchsia-800  border-2 border-blue mb-4`}
+              className={`relative h-[200px] bg-no-repeat  border  w-[300px] group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10 border-fuchsia-800  border-2 border-blue mb-2`}
               style={cardStyle}
             >
               <div>
@@ -178,6 +180,14 @@ const Cards = ({
                 </div>
               </div>
             </div>
+          </div>
+          <div className="w-[100%]">
+            <Typography
+              variant="h6"
+              className={`uppercase text-[${settings.content}]`}
+            >
+              {title}
+            </Typography>
           </div>
         </div>
       )}
