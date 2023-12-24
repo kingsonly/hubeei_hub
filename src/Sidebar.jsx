@@ -16,8 +16,10 @@ function SideIcons({
   loaderStatus,
   goHome,
   goToLiked,
+  settings,
 }) {
   const [searchItem, setSearchItem] = useState("");
+  const [loginStatus, setLoginStatus] = useState(localStorage.getItem("token"));
 
   const style = {
     position: "absolute",
@@ -49,23 +51,29 @@ function SideIcons({
         <div className={iconSize} onClick={() => goHome()}>
           <HomeIcon className="text-white cursor-pointer ml-2 mt-3" />
         </div>
-        <div className={iconSize}>
-          <SearchIcon
-            className={`text-white cursor-pointer ml-2 mt-2 ${
-              searchIcon ? "active" : ""
-            }`}
-            onClick={setSearchIcon}
-          />
-        </div>
+        {settings.search == 1 ? (
+          <div className={iconSize}>
+            <SearchIcon
+              className={`text-white cursor-pointer ml-2 mt-2 ${
+                searchIcon ? "active" : ""
+              }`}
+              onClick={setSearchIcon}
+            />
+          </div>
+        ) : null}
         <div className={iconSize} onClick={() => goToLiked()}>
           <FavoriteBorderIcon className="text-white cursor-pointer ml-2 mt-2" />
         </div>
-        <div className={iconSize}>
-          <AccountCircleIcon className="text-white cursor-pointer ml-2 mt-2" />
-        </div>
-        <div className={iconSize}>
-          <ExitToAppRoundedIcon className="text-white cursor-pointer ml-2 mt-2" />
-        </div>
+        {settings.registration == 1 && loginStatus != null ? (
+          <div className={iconSize}>
+            <AccountCircleIcon className="text-white cursor-pointer ml-2 mt-2" />
+          </div>
+        ) : null}
+        {settings.registration == 1 && loginStatus != null ? (
+          <div className={iconSize}>
+            <ExitToAppRoundedIcon className="text-white cursor-pointer ml-2 mt-2" />
+          </div>
+        ) : null}
 
         <Modal
           open={searchIcon}

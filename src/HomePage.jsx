@@ -52,6 +52,7 @@ function Main({ Rank, height, width }) {
   const [work, setWork] = useState(0);
   const [image, setImage] = useState(null);
   const [topContent, setTopContent] = useState([]);
+  const [hubSettings, setHubSettings] = useState();
 
   useEffect(() => {
     getHubSelected();
@@ -118,6 +119,46 @@ function Main({ Rank, height, width }) {
     }
   };
 
+  const saveHubSettings = (data) => {
+    let settings = {};
+    data.map((item) => {
+      switch (item.name) {
+        case "logo":
+          localStorage.setItem("logo", item.value);
+          settings.logo = item.value;
+          break;
+        case "menu":
+          localStorage.setItem("menu", item.value);
+          settings.menu = item.value;
+          break;
+        case "sportlight":
+          localStorage.setItem("sportlight", item.value);
+          settings.sportlight = item.value;
+          break;
+        case "search":
+          localStorage.setItem("search", item.value);
+          settings.search = item.value;
+          break;
+        case "content":
+          localStorage.setItem("content", item.value);
+          settings.content = item.value;
+          break;
+        case "category":
+          localStorage.setItem("category", item.value);
+          settings.category = item.value;
+          break;
+        case "backeground":
+          localStorage.setItem("backeground", item.value);
+          settings.background = item.value;
+          break;
+        case "registration":
+          localStorage.setItem("registration", item.value);
+          settings.registration = item.value;
+          break;
+      }
+    });
+    setHubSettings(settings);
+  };
   const getHubSelected = async () => {
     // check if its a shared link
     let sharedLinkStatus = window.location.href.split("?");
@@ -129,14 +170,15 @@ function Main({ Rank, height, width }) {
       .get(
         `https://api.hubeei.skillzserver.com/api/hub/get-users-hubs-by-hub-name/${hub}`
       )
-      .then((response) => {
+      .then(async (response) => {
         let data = response.data;
         if (data.status == "success") {
           // save the hub id to to local storage
           localStorage.setItem("hub", data.data.id);
+          saveHubSettings(data.data.settings);
           createNewUser();
           fetchAPI();
-          fetchImage();
+          await fetchImage();
           fetchTopContent();
           if (sharedLinkStatus.length === 2) {
             loadModalForSharedLink(sharedLinkStatus[1]);
@@ -265,7 +307,7 @@ function Main({ Rank, height, width }) {
   return (
     <>
       {initLoader ? (
-        <div className="bg-black pb-10  ">
+        <div className="bg-[${hubSettings.category}] pb-10  ">
           <AppModal
             open={open}
             handleClose={handleClose}
@@ -319,7 +361,15 @@ function Main({ Rank, height, width }) {
             </Box>
           </AppModal>
           <div className="  ">
-            <Slide handleOpen={handleOpen} data={image} />
+            {hubSettings.sportlight == 1 ? (
+              image.length > 0 ? (
+                <Slide handleOpen={handleOpen} data={image} />
+              ) : (
+                <div>the other header goes here too</div>
+              )
+            ) : (
+              <div>the other header goes here</div>
+            )}
           </div>
           <div className="fixed left-0 top-1/2 transform -translate-y-1/2 rounded z-20 ">
             <SideIcons
@@ -330,6 +380,7 @@ function Main({ Rank, height, width }) {
               loaderStatus={searchLoaderStatus}
               goHome={fetchAPI}
               goToLiked={getUsersLikedContent}
+              settings={hubSettings}
             />
           </div>
           <div className=" relative z-10 w-[100%] ">
@@ -351,6 +402,7 @@ function Main({ Rank, height, width }) {
                           content={value.name}
                           id={value.id}
                           imageUrl={`https://api.hubeei.skillzserver.com/public${value.thumbnail}`}
+                          settings={hubSettings}
                         />
                       </div>
                     ))}
@@ -364,7 +416,11 @@ function Main({ Rank, height, width }) {
                   ? category.map((categoryItems) => {
                       return categoryItems.content.length > 0 ? (
                         <div>
-                          <h1 className="text-white">{categoryItems.name} </h1>
+                          <h1
+                            className={`text-[${hubSettings.category}] uppercase`}
+                          >
+                            {categoryItems.name}{" "}
+                          </h1>
                           <Carousel
                             responsive={responsive}
                             infinite={true}
@@ -378,6 +434,7 @@ function Main({ Rank, height, width }) {
                                   id={items.id}
                                   imageUrl={`https://api.hubeei.skillzserver.com/public${items.thumbnail}`}
                                   liked={items.like}
+                                  settings={hubSettings}
                                 />
                               );
                             })}
@@ -385,10 +442,12 @@ function Main({ Rank, height, width }) {
                         </div>
                       ) : (
                         <div>
-                          <h1 className="text-white uppercase">
+                          <h1
+                            className={`text-[${hubSettings.category}] uppercase`}
+                          >
                             {categoryItems.name}{" "}
                           </h1>
-                          <h2 className="text-white">
+                          <h2 className={`text-[${hubSettings.content}]`}>
                             {" "}
                             No Available Content For this Category
                           </h2>
@@ -413,6 +472,7 @@ function Main({ Rank, height, width }) {
                         id={items.id}
                         imageUrl={`https://api.hubeei.skillzserver.com/public${items.thumbnail}`}
                         liked={items.like}
+                        settings={hubSettings}
                       />
                     );
                   })}
