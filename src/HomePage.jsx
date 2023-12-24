@@ -147,7 +147,7 @@ function Main({ Rank, height, width }) {
           localStorage.setItem("category", item.value);
           settings.category = item.value;
           break;
-        case "backeground":
+        case "backgound":
           localStorage.setItem("backeground", item.value);
           settings.background = item.value;
           break;
@@ -307,7 +307,10 @@ function Main({ Rank, height, width }) {
   return (
     <>
       {initLoader ? (
-        <div className="bg-[${hubSettings.category}] pb-10  ">
+        <div
+          className={`pb-10`}
+          style={{ backgroundColor: hubSettings.background }}
+        >
           <AppModal
             open={open}
             handleClose={handleClose}
@@ -363,7 +366,11 @@ function Main({ Rank, height, width }) {
           <div className="  ">
             {hubSettings.sportlight == 1 ? (
               image.length > 0 ? (
-                <Slide handleOpen={handleOpen} data={image} />
+                <Slide
+                  handleOpen={handleOpen}
+                  data={image}
+                  settings={hubSettings}
+                />
               ) : (
                 <div>the other header goes here too</div>
               )
@@ -383,10 +390,15 @@ function Main({ Rank, height, width }) {
               settings={hubSettings}
             />
           </div>
-          <div className=" relative z-10 w-[100%] ">
+          <div className=" relative z-40 w-[100%] ">
             <div className="">
-              <div className="ml-10">
+              <div className="ml-10 mt-[-130px]">
                 <div className="">
+                  <h1
+                    className={`pl-20 text-[${hubSettings.category}] uppercase`}
+                  >
+                    Most Viewed
+                  </h1>
                   <Carousel
                     responsive={responsive}
                     infinite={true}
@@ -394,7 +406,6 @@ function Main({ Rank, height, width }) {
                   >
                     {topContent.map((value, i, f) => (
                       <div>
-                        {console.log("Hi this na so we su", i)}
                         <Card
                           type={true}
                           Rank={i + 1}
