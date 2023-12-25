@@ -76,7 +76,7 @@ const Cards = ({
   };
 
   return (
-    <div className="w-[100%]">
+    <div className="w-[100%] z-40">
       {type ? (
         <div className="flex  text-[] w-[350px] mb-4 h-[100%]">
           <div className="w-[50%] h-[40%]">
