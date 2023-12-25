@@ -20,35 +20,35 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
+import LoginForm from './LoginPage';
+
 
 const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
     breakpoint: { max: 4000, min: 3000 },
-    items: 5,
+    items: 5
   },
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
-    items: 4,
+    items: 4
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
-    items: 3,
+    items: 3
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
-    items: 1,
-  },
+    items: 1
+  }
 };
 
 function Main({ Rank, height, width }) {
   const [defaultContent, setDefaultContent] = useState(false);
   const [initLoader, setInitLoader] = useState(false);
   const [open, setOpen] = useState(false);
-  const [searchIcon, setSearchIcon] = useState(false);
-  const [searchLoaderStatus, setSearchLoaderStatus] = useState(false);
   const [selectedContent, setSelectedContent] = useState();
-  const [category, setCategory] = useState([]);
+  const [category, setCategory] = useState([])
   const [work, setWork] = useState(0);
   const [image, setImage] = useState(null);
   const [topContent, setTopContent] = useState([]);
@@ -58,21 +58,16 @@ function Main({ Rank, height, width }) {
     getHubSelected();
   }, []);
 
-  const setSearchIconUpdate = () => {
-    setSearchIcon(true);
-  };
-
-  const setSearchIconClose = () => {
-    setSearchIcon(false);
-  };
+  const handleLogin = (username) => {
+    setOpen(false);
+  }
 
   const createNewUser = () => {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem('user');
     if (!user) {
-      localStorage.setItem("user", UniqueId());
+      localStorage.setItem('user', UniqueId());
     }
-  };
-
+  }
   const fetchTopContent = async () => {
     let hub = localStorage.getItem("hub");
     try {
@@ -81,10 +76,11 @@ function Main({ Rank, height, width }) {
       );
       if (response.data.status == "success") {
         setTopContent(response.data.data);
-        console.log("Top Content Data:", response.data);
+        console.log('Top Content Data:', response.data);
       }
+
     } catch (error) {
-      console.error("Error fetching top content:", error);
+      console.error('Error fetching top content:', error);
     }
   };
 
@@ -104,18 +100,13 @@ function Main({ Rank, height, width }) {
       const data = await response.json();
 
       if (data.status == "success") {
+
         setCategory(data.data);
-        setSearchLoaderStatus(false);
-        setSearchIcon(false);
       } else {
         console.error(`API request failed: ${response.statusText}`);
-        setSearchLoaderStatus(false);
-        setSearchIcon(false);
       }
     } catch (error) {
       console.error(`Error during API request:, ${error}`);
-      setSearchLoaderStatus(false);
-      setSearchIcon(false);
     }
   };
 
@@ -222,16 +213,18 @@ function Main({ Rank, height, width }) {
   };
 
   const handleOpen = (items) => {
-    let works = work;
-    setWork(works + 1);
-    setSelectedContent(items);
+    let works = work
+    setWork(works + 1)
+    setSelectedContent(items)
     setOpen(true);
   };
 
+
+
   const fetchAPI = async () => {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem('user');
     const headers = {
-      user: user,
+      'user': user,
     };
     let hub = localStorage.getItem("hub");
     await axios
@@ -239,7 +232,7 @@ function Main({ Rank, height, width }) {
         headers,
       })
       .then((response) => {
-        let data = response.data;
+        let data = response.data
         if (data.status == "success") {
           setCategory(response.data.data);
           setDefaultContent(true);
@@ -265,11 +258,13 @@ function Main({ Rank, height, width }) {
           setCategory(response.data.data);
           setDefaultContent(false);
         }
+
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   };
+
 
   const fetchImage = async () => {
     let hub = localStorage.getItem("hub");
@@ -278,9 +273,10 @@ function Main({ Rank, height, width }) {
         `https://api.hubeei.skillzserver.com/api/content/get-spotlight-content/${hub}`
       )
       .then((response) => {
-        let data = response.data;
+        let data = response.data
         if (data.status == "success") {
           setImage(response.data.data);
+
         }
       })
       .catch((error) => {
@@ -289,20 +285,9 @@ function Main({ Rank, height, width }) {
   };
 
   const UniqueId = () => {
-    return "guest_" + Date.now();
-  };
+    return 'guest_' + Date.now();
+  }
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "100%",
-
-    p: 4,
-    height: 400,
-    overflow: "auto",
-  };
 
   return (
     <>
@@ -520,4 +505,11 @@ function Main({ Rank, height, width }) {
   );
 }
 
-export default Main;
+export default Main
+
+
+
+
+
+
+
