@@ -12,7 +12,6 @@ import "@coreui/coreui/dist/css/coreui.min.css";
 //top: "69.9%",
 function Slide({ handleOpen, data, settings }) {
   const afterStyles = {
-    top: "0",
     height: "200px",
     zIndex: 20,
     width: "100%",
@@ -20,7 +19,7 @@ function Slide({ handleOpen, data, settings }) {
     display: "block",
     position: "absolute",
     right: "-1px",
-    bottom: "-1px",
+    bottom: "10%",
     left: "-1px",
   };
 
