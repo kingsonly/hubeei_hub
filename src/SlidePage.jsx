@@ -9,9 +9,10 @@ import "@coreui/coreui/dist/css/coreui.min.css";
 //${settings.backgound}
 
 //after:top-[69.9%]  after:h-[200px] after:z-20  after:z-10 after:w-[100%] after:bg-gradient-to-t after:from-[${settings.background}] after:via-transparent after:to-transparent after:block after:absolute after:-inset-1
+//top: "69.9%",
 function Slide({ handleOpen, data, settings }) {
   const afterStyles = {
-    top: "69.9%",
+    top: "0",
     height: "200px",
     zIndex: 20,
     width: "100%",
