@@ -184,7 +184,8 @@ const Cards = ({
           <div className="w-[100%]">
             <Typography
               variant="h6"
-              className={`uppercase text-[${settings.content}]`}
+              className={`uppercase `}
+              style={{ color: settings.content }}
             >
               {title}
             </Typography>

@@ -308,7 +308,7 @@ function Main({ Rank, height, width }) {
     <>
       {initLoader ? (
         <div
-          className={`pb-10`}
+          className={`pb-10 h-[100vh]`}
           style={{ backgroundColor: hubSettings.background }}
         >
           <AppModal
@@ -372,13 +372,37 @@ function Main({ Rank, height, width }) {
                   settings={hubSettings}
                 />
               ) : (
-                <div>the other header goes here too</div>
+                <div>
+                  <SideIcons
+                    handleSearch={handleSearch}
+                    searchIcon={searchIcon}
+                    setSearchIcon={setSearchIconUpdate}
+                    setSearchIconClose={setSearchIconClose}
+                    loaderStatus={searchLoaderStatus}
+                    goHome={fetchAPI}
+                    goToLiked={getUsersLikedContent}
+                    settings={hubSettings}
+                    defaultLocation={true}
+                  />
+                </div>
               )
             ) : (
-              <div>the other header goes here</div>
+              <div>
+                <SideIcons
+                  handleSearch={handleSearch}
+                  searchIcon={searchIcon}
+                  setSearchIcon={setSearchIconUpdate}
+                  setSearchIconClose={setSearchIconClose}
+                  loaderStatus={searchLoaderStatus}
+                  goHome={fetchAPI}
+                  goToLiked={getUsersLikedContent}
+                  settings={hubSettings}
+                  defaultLocation={true}
+                />
+              </div>
             )}
           </div>
-          <div className="fixed left-0 top-1/2 transform -translate-y-1/2 rounded z-20 ">
+          <div className="fixed left-0 top-1/2 transform -translate-y-1/2 rounded z-50 ">
             <SideIcons
               handleSearch={handleSearch}
               searchIcon={searchIcon}
@@ -395,7 +419,8 @@ function Main({ Rank, height, width }) {
               <div className="ml-10 mt-[-130px]">
                 <div className="">
                   <h1
-                    className={`pl-20 text-[${hubSettings.category}] uppercase`}
+                    className={`pl-20  uppercase`}
+                    style={{ color: hubSettings.category }}
                   >
                     Most Viewed
                   </h1>
@@ -428,7 +453,8 @@ function Main({ Rank, height, width }) {
                       return categoryItems.content.length > 0 ? (
                         <div>
                           <h1
-                            className={`text-[${hubSettings.category}] uppercase`}
+                            className={`uppercase`}
+                            style={{ color: hubSettings.category }}
                           >
                             {categoryItems.name}{" "}
                           </h1>
@@ -454,11 +480,12 @@ function Main({ Rank, height, width }) {
                       ) : (
                         <div>
                           <h1
-                            className={`text-[${hubSettings.category}] uppercase`}
+                            className={` uppercase`}
+                            style={{ color: hubSettings.category }}
                           >
                             {categoryItems.name}{" "}
                           </h1>
-                          <h2 className={`text-[${hubSettings.content}]`}>
+                          <h2 style={{ color: hubSettings.content }}>
                             {" "}
                             No Available Content For this Category
                           </h2>
