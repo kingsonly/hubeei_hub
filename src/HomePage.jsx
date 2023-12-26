@@ -50,7 +50,7 @@ function Main({ Rank, height, width }) {
   const [selectedContent, setSelectedContent] = useState();
   const [category, setCategory] = useState([]);
   const [work, setWork] = useState(0);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState([]);
   const [topContent, setTopContent] = useState([]);
   const [hubSettings, setHubSettings] = useState();
 
