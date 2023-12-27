@@ -19,7 +19,7 @@ function Slide({ handleOpen, data, settings }) {
     display: "block",
     position: "absolute",
     right: "-1px",
-    bottom: "10%",
+    bottom: "9%",
     left: "-1px",
   };
 
@@ -56,6 +56,7 @@ function Slide({ handleOpen, data, settings }) {
                 imageUrl={`https://api.hubeei.skillzserver.com/public${item.thumbnail}`}
                 handleOpen={handleOpen}
                 data={item}
+                settings={settings}
               />
             </CCarouselItem>
           ))

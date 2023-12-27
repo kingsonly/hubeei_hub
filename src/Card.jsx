@@ -5,7 +5,7 @@ import ShareDialog from "./ShareIcons";
 import axios from "axios";
 import RankIcon from "./RankIcon";
 import { Typography } from "@mui/material";
-
+import logo from "./Images/logo_small.png";
 const Cards = ({
   title,
   imageUrl,
@@ -78,11 +78,16 @@ const Cards = ({
   return (
     <div className="w-[100%] z-40">
       {type ? (
-        <div className="flex  text-[] w-[350px] mb-4 h-[100%]">
-          <div className="w-[50%] h-[40%]">
-            <RankIcon Rank={Rank} width="200px" height="200px" />
+        <div className="flex   sm:w-[350px] mb-4 h-[100%] w-[150px]">
+          <div className="sm:w-[50%] h-[40%]">
+            <RankIcon
+              className="w-[80px] h-[100px] sm:w-[200px] sm:h-[200px] "
+              Rank={Rank}
+              width="60px"
+              height="100px"
+            />
           </div>
-          <div className="w-[70%]">
+          <div className="sm:w-[50%]">
             <div
               onClick={handleCardClick}
               className={`relative h-[100%] bg-no-repeat group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10  mb-2 ml-0`}
@@ -93,15 +98,15 @@ const Cards = ({
                   <div className="relative">
                     <div className="relative top-0 right-0">
                       <div className="w-[82px]">
-                        <h3 className="text-amber-400">Icons</h3>
+                        <img src={logo} className="sm:w-[20px] w-[10px]" />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className=" absolute bottom-0 right-0 mb-6  mr-4">
-                  {!shareIcon ? (
-                    <div className="bg-slate-600 w-[100%]  flex flex justify-between rounded-lg ">
-                      <div className="ml-1 mt-2 mr-2 mb-2">
+                {!shareIcon ? (
+                  <div className="px-2 rounded-lg flex items-center justify-center absolute bg-slate-600 h-[40px] bottom-0 right-0 sm:mb-6 w-[90%] sm:mr-4 sm:w-[80px]">
+                    <div className=" w-[100%]  flex justify-between  ">
+                      <div className="">
                         <div className="">
                           {isLiked ? (
                             <FavoriteRoundedIcon
@@ -117,16 +122,19 @@ const Cards = ({
                         </div>
                       </div>
 
-                      <div className="ml-1 mt-2 mr-2 mb-2 rounded-lg ">
+                      <div className="  ">
                         <div className="bg-[white] rounded-md ">
                           <ShareRoundedIcon onClick={openShareDialog} />
                         </div>
                       </div>
                     </div>
-                  ) : (
-                    <ShareDialog close={closeShareDialog} />
-                  )}
-                </div>
+                  </div>
+                ) : null}
+                {shareIcon ? (
+                  <div className="px-2 rounded-lg flex items-center justify-center absolute h-[40px] bottom-0 right-0 sm:mb-6 w-[100%]  ">
+                    <ShareDialog close={closeShareDialog} id={id} />
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
@@ -136,7 +144,7 @@ const Cards = ({
           <div>
             <div
               onClick={handleCardClick}
-              className={`relative h-[200px] bg-no-repeat  border  w-[300px] group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10 border-fuchsia-800  border-2 border-blue mb-2`}
+              className={`sm:h-[200px] sm:w-[300px] w-[150px] h-[100px]  relative  bg-no-repeat  border  group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10 border-fuchsia-800  border-2 border-blue mb-2`}
               style={cardStyle}
             >
               <div>
@@ -144,15 +152,15 @@ const Cards = ({
                   <div className="relative">
                     <div className="relative top-0 right-0">
                       <div className="w-[82px]">
-                        <h3 className="text-amber-400">Icons</h3>
+                        <img src={logo} className="sm:w-[20px] w-[10px]" />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className=" absolute bottom-0 right-0 mb-6 w-6px mr-4">
-                  {!shareIcon ? (
-                    <div className="bg-slate-600 w-[100%]  flex flex justify-between rounded-lg ">
-                      <div className="ml-1 mt-2 mr-2 mb-2">
+                {!shareIcon ? (
+                  <div className="px-2 rounded-lg flex items-center justify-center absolute bg-slate-600 h-[40px] bottom-0 right-0 sm:mb-6 w-[50%] sm:mr-4 sm:w-[80px]">
+                    <div className=" w-[100%]  flex justify-between  ">
+                      <div className="">
                         <div className="">
                           {isLiked ? (
                             <FavoriteRoundedIcon
@@ -168,27 +176,27 @@ const Cards = ({
                         </div>
                       </div>
 
-                      <div className="ml-1 mt-2 mr-2 mb-2 rounded-lg ">
+                      <div className="  ">
                         <div className="bg-[white] rounded-md ">
                           <ShareRoundedIcon onClick={openShareDialog} />
                         </div>
                       </div>
                     </div>
-                  ) : (
-                    <ShareDialog close={closeShareDialog} />
-                  )}
-                </div>
+                  </div>
+                ) : null}
+                {shareIcon ? (
+                  <div className="px-2 rounded-lg flex items-center justify-center absolute h-[40px] bottom-0 right-0 sm:mb-6 w-[100%]  ">
+                    <ShareDialog close={closeShareDialog} id={id} />
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
-          <div className="w-[100%]">
-            <Typography
-              variant="h6"
-              className={`uppercase `}
-              style={{ color: settings.content }}
-            >
-              {title}
-            </Typography>
+          <div
+            className="w-[100%] text-[22px] font-roboto uppercase truncate"
+            style={{ color: settings.content }}
+          >
+            {title}
           </div>
         </div>
       )}

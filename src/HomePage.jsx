@@ -37,7 +37,7 @@ const responsive = {
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
-    items: 1,
+    items: 2,
   },
 };
 
@@ -308,7 +308,7 @@ function Main({ Rank, height, width }) {
     <>
       {initLoader ? (
         <div
-          className={`pb-10 h-[100vh]`}
+          className={`pb-10 min-h-[100vh] h-100% overflow-auto`}
           style={{ backgroundColor: hubSettings.background }}
         >
           <AppModal
@@ -320,7 +320,10 @@ function Main({ Rank, height, width }) {
               {selectedContent != null ? (
                 <div className="w-[100%]">
                   <div className="w-[100%] text-center mb-4">
-                    <h2 className="text-[50px] text-[#DCD427] uppercase">
+                    <h2
+                      style={{ color: hubSettings.category }}
+                      className="text-[50px] text-[#DCD427] uppercase"
+                    >
                       {selectedContent.name}
                     </h2>
                   </div>
@@ -340,19 +343,20 @@ function Main({ Rank, height, width }) {
                       </div>
                       <div className="text-[#fff]">0</div>
                     </div>
-                    {selectedContent.sportlight > 0 ?? (
-                      <div>
-                        <StarRateIcon className="text-[#DCD427]" />
-                      </div>
-                    )}
                   </div>
                   <div className="mt-4">
                     <div>
-                      <h1 className="mt-2 text-[#DCD427] text-[28px] font-roboto uppercase">
+                      <h1
+                        style={{ color: hubSettings.category }}
+                        className="mt-2 text-[#DCD427] text-[28px] font-roboto uppercase"
+                      >
                         Description
                       </h1>
                     </div>
-                    <div className="text-[22px] text-[#fff] font-roboto">
+                    <div
+                      style={{ color: hubSettings.content }}
+                      className="text-[22px] text-[#fff] font-roboto"
+                    >
                       {selectedContent.content_description}
                     </div>
                   </div>
@@ -414,21 +418,17 @@ function Main({ Rank, height, width }) {
               settings={hubSettings}
             />
           </div>
-          <div className=" relative z-40 w-[100%] ">
+          <div className=" relative z-40 w-[90%] mx-auto">
             <div className="">
-              <div className="ml-10 mt-[-130px]">
+              <div className=" mt-[-130px]">
                 <div className="">
                   <h1
-                    className={`pl-20  uppercase`}
+                    className={`  uppercase`}
                     style={{ color: hubSettings.category }}
                   >
                     Most Viewed
                   </h1>
-                  <Carousel
-                    responsive={responsive}
-                    infinite={true}
-                    keyBoardControl={true}
-                  >
+                  <Carousel responsive={responsive} keyBoardControl={true}>
                     {topContent.map((value, i, f) => (
                       <div>
                         <Card
@@ -447,7 +447,7 @@ function Main({ Rank, height, width }) {
               </div>
             </div>
             {defaultContent ? (
-              <div className=" w-[86%]" style={{ margin: "-20px auto" }}>
+              <div className=" w-[100%]">
                 {category.length > 0
                   ? category.map((categoryItems) => {
                       return categoryItems.content.length > 0 ? (
