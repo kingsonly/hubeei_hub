@@ -17,9 +17,9 @@ function Slide({ handleOpen, data, settings }) {
     width: "100%",
     backgroundImage: `linear-gradient(to top, ${settings.background}, transparent)`,
     display: "block",
-    position: "absolute",
+
     right: "-1px",
-    bottom: "9%",
+
     left: "-1px",
   };
 
@@ -64,7 +64,10 @@ function Slide({ handleOpen, data, settings }) {
           <p>Loading...</p>
         )}
       </CCarousel>
-      <div style={afterStyles}></div>
+      <div
+        className="absolute bottom-[-2px] sm:bottom-[10.01%]"
+        style={afterStyles}
+      ></div>
     </div>
   );
 }
