@@ -28,11 +28,9 @@ function SideIcons({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 800,
-    bgcolor: "black",
     p: 4,
-    height: 400,
     overflow: "auto",
+    outline: "none",
   };
 
   const onHandleSearch = async () => {
@@ -74,8 +72,15 @@ function SideIcons({
                   borderTopLeftRadius: "20px",
                   borderBottomLeftRadius: "20px",
                   height: 40,
-                  width: 500, // Adjusted width to leave space for the button
                   marginRight: "0",
+                  "@media (max-width:600px)": {
+                    width: 300,
+                  },
+
+                  // Adjust styles for screens larger than or equal to 960px
+                  "@media (min-width:960px)": {
+                    width: 500,
+                  },
                 }}
               />
             </div>
@@ -141,22 +146,27 @@ function SideIcons({
         </div>
       ) : (
         <div>
-          <div className="mb-[180px] h-[80px] ">
+          <div className="sm:mb-[180px] sm:h-[80px] h-[300px] ">
             <div
               style={{ color: settings.category }}
-              className="px-[50px] font-roboto text-[18px] flex w-[48%] h-[100%] justify-between items-center"
+              className="sm:px-[50px] font-roboto text-[18px] sm:flex sm:w-[48%] sm:h-[100%] sm:justify-between sm:items-center"
             >
-              <div onClick={() => goHome()}>
-                <img src={logo} className="w-[200px]" />
+              <div
+                onClick={() => goHome()}
+                className="sm:block flex justify-center"
+              >
+                <img src={logo} className="sm:w-[200px] w-[250px]" />
               </div>
-              <div className="cursor-pointer" onClick={() => goHome()}>
-                Home
-              </div>
-              <div onClick={() => goToLiked()} className="cursor-pointer">
-                Favorite
-              </div>
-              <div onClick={setSearchIcon} className="cursor-pointer">
-                Search
+              <div className="sm:w-[100%] flex justify-around mt-4">
+                <div className="cursor-pointer" onClick={() => goHome()}>
+                  Home
+                </div>
+                <div onClick={() => goToLiked()} className="cursor-pointer">
+                  Favorite
+                </div>
+                <div onClick={setSearchIcon} className="cursor-pointer">
+                  Search
+                </div>
               </div>
             </div>
             <div></div>
