@@ -16,3 +16,19 @@ code {
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+.WebkitBottom-10 {
+  bottom: 10%;
+}
+
+@media all and (-webkit-min-device-pixel-ratio:0) and (min-resolution: .001dpcm) {
+  
+}
+
+
+@supports (not (-moz-appearance:button)) and (contain:paint) and (-webkit-appearance:none) {
+
+  .WebkitBottom-10 {
+      bottom: -25px;
+    }
+
+}

@@ -14,7 +14,6 @@ const style = {
   bgcolor: "black",
   boxShadow: 24,
   p: 4,
-  overflow: "auto",
   outline: "none",
 };
 
@@ -31,13 +30,15 @@ export default function AppModal(props) {
       >
         <Box sx={style}>
           <div
-            className="cursor-pointer text-red-500 absolute top-[1px] left-[-1px]  "
+            className=" fixed cursor-pointer text-red-500  top-[6px] left-[-1px] font-roboto  "
             onClick={handleClose}
           >
-            {" "}
-            <ClearOutlinedIcon style={{ fontSize: 50 }} />
+            <ClearOutlinedIcon style={{ fontSize: 30 }} />
+            <span>Close</span>
           </div>
-          {children}
+          <div style={{ overflow: "auto", width: "100%", height: "100%" }}>
+            {children}
+          </div>
         </Box>
       </Modal>
     </div>

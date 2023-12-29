@@ -28,16 +28,23 @@ function HeaderHero(props) {
   };
   return (
     <div
-      className=" bg-no-repeat  w-[100%] h-[90vh] flex items-center z-50"
+      className=" bg-no-repeat  w-[100%] h-[90vh] flex  z-50"
       style={cardStyle}
     >
-      <div className="sm:ml-[200px]   h-[70%] w-[100%]  ">
+      <div className="sm:ml-[200px] sm:mt-4  h-[100%] w-[100%]  ">
         <div className="h-[100%] w-[80%] sm:w-[100%]  mx-auto">
-          <div className="h-[60%] ">
-            <div className="mb-[4%] sm:w-[15%]  h-[40%] relative z-50 ">
-              <img src={Images} alt="" className="w-full h-full z-50" />
+          <div className="h-[40%] ">
+            <div className="sm:mb-[4%] sm:w-[15%]  h-[20%] relative z-50 ">
+              <img src={Images} alt="" className="max-w-full max-h-full z-50" />
+              <h2
+                className="w-[100%] text-center mt-2"
+                style={{ color: settings.category }}
+              >
+                {" "}
+                Ubuxa
+              </h2>
             </div>
-            <div mb-8 className=" w-[50%] h-[50%] relative z-50">
+            <div mb-8 className="  w-[50%] h-[20%] relative z-50">
               <div className=" relative z-50">
                 <h3 className=" uppercase" style={{ color: settings.category }}>
                   {data.name}
@@ -72,7 +79,7 @@ function HeaderHero(props) {
               </div>
             </div>
           </div>
-          <div className="flex justify-between w-[100%] sm:w-[270px] z-50 ">
+          <div className="flex sm:mt-4 justify-between w-[100%] sm:w-[270px] z-50 ">
             <div
               className="flex items-center justify-center h-[50px] cursor-pointer rounded text-[] text-[16px] font-bold w-[100px] h-[50px] cursor-pointer bg-[#DCD427] text-[red]  z-50  "
               style={buttonStyle}
@@ -86,7 +93,7 @@ function HeaderHero(props) {
               className="flex items-center justify-center h-[50px] cursor-pointer rounded bg-[#fff]/70 text-[#DCD427] text-[16px] font-bold w-[140px] z-50"
               style={buttonStyle}
             >
-              <div>
+              <div className="z-[60]">
                 <InfoOutlinedIcon /> More info
               </div>
             </div>

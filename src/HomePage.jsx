@@ -420,14 +420,14 @@ function Main({ Rank, height, width }) {
           </div>
           <div className=" relative z-40 w-[90%] mx-auto">
             <div className="">
-              <div className=" mt-[-130px]">
+              <div className=" mt-[-130px] ">
                 <div className="">
-                  <h1
-                    className={`  uppercase`}
+                  <h3
+                    className={`  uppercase font-roboto `}
                     style={{ color: hubSettings.category }}
                   >
                     Most Viewed
-                  </h1>
+                  </h3>
                   <Carousel responsive={responsive} keyBoardControl={true}>
                     {topContent.map((value, i, f) => (
                       <div>
@@ -451,13 +451,13 @@ function Main({ Rank, height, width }) {
                 {category.length > 0
                   ? category.map((categoryItems) => {
                       return categoryItems.content.length > 0 ? (
-                        <div>
-                          <h1
-                            className={`uppercase`}
+                        <div className="mt-4">
+                          <h3
+                            className={`uppercase font-roboto`}
                             style={{ color: hubSettings.category }}
                           >
                             {categoryItems.name}{" "}
-                          </h1>
+                          </h3>
                           <Carousel
                             responsive={responsive}
                             infinite={true}
@@ -478,17 +478,13 @@ function Main({ Rank, height, width }) {
                           </Carousel>
                         </div>
                       ) : (
-                        <div>
-                          <h1
-                            className={` uppercase`}
+                        <div className="mt-4">
+                          <h3
+                            className={` uppercase font-roboto`}
                             style={{ color: hubSettings.category }}
                           >
                             {categoryItems.name}{" "}
-                          </h1>
-                          <h2 style={{ color: hubSettings.content }}>
-                            {" "}
-                            No Available Content For this Category
-                          </h2>
+                          </h3>
                         </div>
                       );
                     })
@@ -496,7 +492,7 @@ function Main({ Rank, height, width }) {
               </div>
             ) : (
               <div className=" w-[86%]" style={{ margin: "-20px auto" }}>
-                <h1 className="text-white">Liked Content </h1>
+                <h3 className="text-white font-roboto">Liked Content </h3>
                 <Carousel
                   responsive={responsive}
                   infinite={true}
