@@ -16,19 +16,33 @@ code {
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-.WebkitBottom-10 {
-  bottom: 10%;
+
+
+.option-li {
+  position: relative;
+  list-style: none;
+  /* Adjust the spacing between list items */
 }
 
-@media all and (-webkit-min-device-pixel-ratio:0) and (min-resolution: .001dpcm) {
+.option-li::before {
   
+  content: counter(item, upper-alpha);
+  counter-increment: item;
+  width: 100;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: -20px;
+  /* Adjust the distance between the content and the letter box */
 }
 
+.options div {
+  
+  padding-left: 30px
+}
 
-@supports (not (-moz-appearance:button)) and (contain:paint) and (-webkit-appearance:none) {
-
-  .WebkitBottom-10 {
-      bottom: -25px;
-    }
-
+.options {
+  list-style: none;
+  counter-reset: item;
 }

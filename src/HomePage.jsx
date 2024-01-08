@@ -20,6 +20,7 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
+import Engagement from "./engagement";
 
 const responsive = {
   superLargeDesktop: {
@@ -120,8 +121,9 @@ function Main({ Rank, height, width }) {
   };
 
   const saveHubSettings = (data) => {
-    let settings = {};
-    data.map((item) => {
+    let settings = { name: data.name };
+
+    data.settings.map((item) => {
       switch (item.name) {
         case "logo":
           localStorage.setItem("logo", item.value);
@@ -175,7 +177,8 @@ function Main({ Rank, height, width }) {
         if (data.status == "success") {
           // save the hub id to to local storage
           localStorage.setItem("hub", data.data.id);
-          saveHubSettings(data.data.settings);
+          localStorage.setItem("hubName", data.data.name);
+          saveHubSettings(data.data);
           createNewUser();
           fetchAPI();
           await fetchImage();

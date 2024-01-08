@@ -40,8 +40,7 @@ function HeaderHero(props) {
                 className="w-[100%] text-center mt-2"
                 style={{ color: settings.category }}
               >
-                {" "}
-                Ubuxa
+                {settings.name}
               </h2>
             </div>
             <div mb-8 className="  w-[50%] h-[20%] relative z-50">
