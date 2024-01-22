@@ -10,7 +10,7 @@ const LoginForm = ({ onLogin }) => {
     onLogin(email)
   };
   return (
-    <div className="flex flex-col items-center justify-center  bg-black text-white border-2 border-yellow-500 w-1/2 h-1/2">
+    <div className="flex flex-col items-center justify-center  bg-black text-white border-2 border-yellow-500 lg:w-1/2 h-1/2">
       <h1 className="text-2xl text-yellow-500 font-bold mb-4">Hubbei</h1>
       <div className="mb-4 flex items-center border-2 border-white-500 w-[80%] h-[15%]">
         <label className="mr-4 px-2">
