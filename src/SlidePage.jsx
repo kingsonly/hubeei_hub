@@ -12,15 +12,14 @@ import "@coreui/coreui/dist/css/coreui.min.css";
 //top: "69.9%",
 function Slide({ handleOpen, data, settings }) {
   const afterStyles = {
-    top: "0",
     height: "200px",
     zIndex: 20,
     width: "100%",
     backgroundImage: `linear-gradient(to top, ${settings.background}, transparent)`,
     display: "block",
-    position: "absolute",
+
     right: "-1px",
-    bottom: "-1px",
+
     left: "-1px",
   };
 
@@ -57,6 +56,7 @@ function Slide({ handleOpen, data, settings }) {
                 imageUrl={`https://api.hubeei.skillzserver.com/public${item.thumbnail}`}
                 handleOpen={handleOpen}
                 data={item}
+                settings={settings}
               />
             </CCarouselItem>
           ))
@@ -64,7 +64,10 @@ function Slide({ handleOpen, data, settings }) {
           <p>Loading...</p>
         )}
       </CCarousel>
-      <div style={afterStyles}></div>
+      <div
+        className="absolute bottom-[-2px] sm:bottom-[10.01%]"
+        style={afterStyles}
+      ></div>
     </div>
   );
 }

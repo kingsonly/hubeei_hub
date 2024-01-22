@@ -177,7 +177,7 @@ function Main({ Rank, height, width }) {
       .then(async (response) => {
         let data = response.data;
         if (data.status == "success") {
-          // save the hub id to to local storage
+          // save the hub id to  local storage
           localStorage.setItem("hub", data.data.id);
           await saveHubSettings(data.data.settings);
           createNewUser();
@@ -203,7 +203,7 @@ function Main({ Rank, height, width }) {
             setInitLoader(true);
           }
         } else {
-          console.log("something weant wrong");
+          console.log("something went wrong");
         }
       })
       .catch((error) => {
