@@ -12,6 +12,7 @@ import StarRateIcon from "@mui/icons-material/StarRate";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import logo from "./Images/logo.png";
+
 import {
   Box,
   Input,
@@ -20,54 +21,62 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
-import LoginForm from './LoginPage';
+import RegistrationForm from "./Registration";
 
 
 const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
     breakpoint: { max: 4000, min: 3000 },
-    items: 5
+    items: 5,
   },
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
-    items: 4
+    items: 4,
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
-    items: 3
+    items: 3,
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
-    items: 1
-  }
+    items: 1,
+  },
 };
 
 function Main({ Rank, height, width }) {
   const [defaultContent, setDefaultContent] = useState(false);
   const [initLoader, setInitLoader] = useState(false);
   const [open, setOpen] = useState(false);
+  const [searchIcon, setSearchIcon] = useState(false);
+  const [searchLoaderStatus, setSearchLoaderStatus] = useState(false);
   const [selectedContent, setSelectedContent] = useState();
-  const [category, setCategory] = useState([])
+  const [category, setCategory] = useState([]);
   const [work, setWork] = useState(0);
   const [image, setImage] = useState(null);
   const [topContent, setTopContent] = useState([]);
   const [hubSettings, setHubSettings] = useState();
+  const [login, setLogin] = useState(false);
 
   useEffect(() => {
     getHubSelected();
   }, []);
 
-  const handleLogin = (username) => {
-    setOpen(false);
-  }
+  const setSearchIconUpdate = () => {
+    setSearchIcon(true);
+  };
+
+  const setSearchIconClose = () => {
+    setSearchIcon(false);
+  };
 
   const createNewUser = () => {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem("user");
     if (!user) {
-      localStorage.setItem('user', UniqueId());
+      localStorage.setItem("user", UniqueId());
     }
-  }
+  };
+
   const fetchTopContent = async () => {
     let hub = localStorage.getItem("hub");
     try {
@@ -76,11 +85,10 @@ function Main({ Rank, height, width }) {
       );
       if (response.data.status == "success") {
         setTopContent(response.data.data);
-        console.log('Top Content Data:', response.data);
+        console.log("Top Content Data:", response.data);
       }
-
     } catch (error) {
-      console.error('Error fetching top content:', error);
+      console.error("Error fetching top content:", error);
     }
   };
 
@@ -100,17 +108,22 @@ function Main({ Rank, height, width }) {
       const data = await response.json();
 
       if (data.status == "success") {
-
         setCategory(data.data);
+        setSearchLoaderStatus(false);
+        setSearchIcon(false);
       } else {
         console.error(`API request failed: ${response.statusText}`);
+        setSearchLoaderStatus(false);
+        setSearchIcon(false);
       }
     } catch (error) {
       console.error(`Error during API request:, ${error}`);
+      setSearchLoaderStatus(false);
+      setSearchIcon(false);
     }
   };
 
-  const saveHubSettings = (data) => {
+  const saveHubSettings = async (data) => {
     let settings = {};
     data.map((item) => {
       switch (item.name) {
@@ -166,10 +179,23 @@ function Main({ Rank, height, width }) {
         if (data.status == "success") {
           // save the hub id to to local storage
           localStorage.setItem("hub", data.data.id);
-          saveHubSettings(data.data.settings);
+          await saveHubSettings(data.data.settings);
           createNewUser();
           fetchAPI();
           await fetchImage();
+          data.data.settings.map((item) => {
+            if (item.name == "registration") {
+              if (item.value == 1) {
+
+                let Token = localStorage.getItem("token")
+                if (Token == null) {
+                  setLogin(true)
+                  console.log("This", Token)
+                }
+              }
+            }
+          })
+
           fetchTopContent();
           if (sharedLinkStatus.length === 2) {
             loadModalForSharedLink(sharedLinkStatus[1]);
@@ -213,18 +239,16 @@ function Main({ Rank, height, width }) {
   };
 
   const handleOpen = (items) => {
-    let works = work
-    setWork(works + 1)
-    setSelectedContent(items)
+    let works = work;
+    setWork(works + 1);
+    setSelectedContent(items);
     setOpen(true);
   };
 
-
-
   const fetchAPI = async () => {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem("user");
     const headers = {
-      'user': user,
+      user: user,
     };
     let hub = localStorage.getItem("hub");
     await axios
@@ -232,7 +256,7 @@ function Main({ Rank, height, width }) {
         headers,
       })
       .then((response) => {
-        let data = response.data
+        let data = response.data;
         if (data.status == "success") {
           setCategory(response.data.data);
           setDefaultContent(true);
@@ -258,13 +282,11 @@ function Main({ Rank, height, width }) {
           setCategory(response.data.data);
           setDefaultContent(false);
         }
-
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   };
-
 
   const fetchImage = async () => {
     let hub = localStorage.getItem("hub");
@@ -273,10 +295,9 @@ function Main({ Rank, height, width }) {
         `https://api.hubeei.skillzserver.com/api/content/get-spotlight-content/${hub}`
       )
       .then((response) => {
-        let data = response.data
+        let data = response.data;
         if (data.status == "success") {
           setImage(response.data.data);
-
         }
       })
       .catch((error) => {
@@ -285,9 +306,20 @@ function Main({ Rank, height, width }) {
   };
 
   const UniqueId = () => {
-    return 'guest_' + Date.now();
-  }
+    return "guest_" + Date.now();
+  };
 
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "100%",
+
+    p: 4,
+    height: 400,
+    overflow: "auto",
+  };
 
   return (
     <>
@@ -296,6 +328,16 @@ function Main({ Rank, height, width }) {
           className={`pb-10`}
           style={{ backgroundColor: hubSettings.background }}
         >
+          <AppModal
+            open={login}
+            style={{ backdropFilter: "blur(1px)" }}
+          >
+            <div className="flex items-center justify-center h-full w-[90%]">
+              <RegistrationForm />
+            </div>
+
+          </AppModal>
+
           <AppModal
             open={open}
             handleClose={handleClose}
@@ -322,6 +364,7 @@ function Main({ Rank, height, width }) {
                     <div className="flex px-2 justify-between rounded-full border-2 border-[#DCD427] min-w-[70px] mx-4  ">
                       <div>
                         <FavoriteIcon className="text-[#DCD427]" />
+
                       </div>
                       <div className="text-[#fff]">0</div>
                     </div>
@@ -410,46 +453,46 @@ function Main({ Rank, height, width }) {
               <div className=" w-[86%]" style={{ margin: "-20px auto" }}>
                 {category.length > 0
                   ? category.map((categoryItems) => {
-                      return categoryItems.content.length > 0 ? (
-                        <div>
-                          <h1
-                            className={`text-[${hubSettings.category}] uppercase`}
-                          >
-                            {categoryItems.name}{" "}
-                          </h1>
-                          <Carousel
-                            responsive={responsive}
-                            infinite={true}
-                            keyBoardControl={true}
-                          >
-                            {categoryItems.content.map((items, i) => {
-                              return (
-                                <Card
-                                  handleOpen={() => handleOpen(items)}
-                                  title={items.name}
-                                  id={items.id}
-                                  imageUrl={`https://api.hubeei.skillzserver.com/public${items.thumbnail}`}
-                                  liked={items.like}
-                                  settings={hubSettings}
-                                />
-                              );
-                            })}
-                          </Carousel>
-                        </div>
-                      ) : (
-                        <div>
-                          <h1
-                            className={`text-[${hubSettings.category}] uppercase`}
-                          >
-                            {categoryItems.name}{" "}
-                          </h1>
-                          <h2 className={`text-[${hubSettings.content}]`}>
-                            {" "}
-                            No Available Content For this Category
-                          </h2>
-                        </div>
-                      );
-                    })
+                    return categoryItems.content.length > 0 ? (
+                      <div>
+                        <h1
+                          className={`text-[${hubSettings.category}] uppercase`}
+                        >
+                          {categoryItems.name}{" "}
+                        </h1>
+                        <Carousel
+                          responsive={responsive}
+                          infinite={true}
+                          keyBoardControl={true}
+                        >
+                          {categoryItems.content.map((items, i) => {
+                            return (
+                              <Card
+                                handleOpen={() => handleOpen(items)}
+                                title={items.name}
+                                id={items.id}
+                                imageUrl={`https://api.hubeei.skillzserver.com/public${items.thumbnail}`}
+                                liked={items.like}
+                                settings={hubSettings}
+                              />
+                            );
+                          })}
+                        </Carousel>
+                      </div>
+                    ) : (
+                      <div>
+                        <h1
+                          className={`text-[${hubSettings.category}] uppercase`}
+                        >
+                          {categoryItems.name}{" "}
+                        </h1>
+                        <h2 className={`text-[${hubSettings.content}]`}>
+                          {" "}
+                          No Available Content For this Category
+                        </h2>
+                      </div>
+                    );
+                  })
                   : console.log("khkh", category)}
               </div>
             ) : (
@@ -505,11 +548,4 @@ function Main({ Rank, height, width }) {
   );
 }
 
-export default Main
-
-
-
-
-
-
-
+export default Main;
