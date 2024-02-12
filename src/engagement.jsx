@@ -7,6 +7,8 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import { styled } from "@mui/material/styles";
+
 function Engagement({ content }) {
   const [data, setData] = useState([]);
   const [currentEngagement, setCurrentEngagement] = useState(0);
@@ -16,6 +18,42 @@ function Engagement({ content }) {
   const [message, setMessage] = useState("");
   const [displayWhat, setDisplayWhat] = useState(false);
   const [selectedTab, setSelectedTab] = React.useState("1");
+
+  const AntTab = styled((props) => <Tab disableRipple {...props} />)(
+    ({ theme }) => ({
+      textTransform: "none",
+      minWidth: 0,
+      [theme.breakpoints.up("sm")]: {
+        minWidth: 0,
+      },
+      fontWeight: theme.typography.fontWeightRegular,
+      marginRight: theme.spacing(1),
+      color: background,
+      fontFamily: [
+        "-apple-system",
+        "BlinkMacSystemFont",
+        '"Segoe UI"',
+        "Roboto",
+        '"Helvetica Neue"',
+        "Arial",
+        "sans-serif",
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(","),
+      "&:hover": {
+        color: color,
+        opacity: 1,
+      },
+      "&.Mui-selected": {
+        color: color,
+        fontWeight: theme.typography.fontWeightMedium,
+      },
+      "&.Mui-focusVisible": {
+        backgroundColor: background,
+      },
+    })
+  );
   useEffect(() => {
     getEngagment(content.id);
   }, []);
@@ -211,9 +249,14 @@ function Engagement({ content }) {
           <Box sx={{ width: "100%", typography: "body1" }}>
             <TabContext value={selectedTab}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <TabList onChange={switchTab}>
-                  <Tab value="1" label="Your Answer" />
-                  <Tab value="2" label="General" />
+                <TabList
+                  onChange={switchTab}
+                  textColor="secondary"
+                  indicatorColor="secondary"
+                  sx={{ color: "red" }}
+                >
+                  <AntTab value="1" label="Your Answer" />
+                  <AntTab value="2" label="General" />
                 </TabList>
               </Box>
               <TabPanel value="1">{renderAllResponse("yours")}</TabPanel>

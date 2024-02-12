@@ -3,17 +3,21 @@ import Pdfdisplay from "./pdfdisplay";
 import Video from "./video";
 import Engagement from "./engagement";
 
-const Contents = ({ data }) => {
+const Contents = ({ data, withEngagmnet = false }) => {
   const renderFileContent = () => {
-    switch (data.content_type) {
-      case "audio":
-        return <Audio data={data} />;
-      case "video":
-        return <Video data={data} />;
-      case "pdf":
-        return <Pdfdisplay data={data} />;
-      case "engagement":
-        return <Engagement content={data} />;
+    if (withEngagmnet) {
+      return <Engagement content={data} />;
+    } else {
+      switch (data.content_type) {
+        case "audio":
+          return <Audio data={data} />;
+        case "video":
+          return <Video data={data} />;
+        case "pdf":
+          return <Pdfdisplay data={data} />;
+        case "engagement":
+          return <Engagement content={data} />;
+      }
     }
   };
 

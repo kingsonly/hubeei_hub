@@ -36,6 +36,10 @@ function SideIcons({
   const onHandleSearch = async () => {
     handleSearch(searchItem);
   };
+  const logout = async () => {
+    localStorage.clear();
+    window.location.reload();
+  };
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -138,7 +142,7 @@ function SideIcons({
               </div>
             ) : null}
             {settings.registration == 1 && loginStatus != null ? (
-              <div className={iconSize}>
+              <div className={iconSize} onClick={logout}>
                 <ExitToAppRoundedIcon className="text-white cursor-pointer ml-2 mt-2" />
               </div>
             ) : null}
