@@ -14,12 +14,11 @@ const style = {
   bgcolor: "black",
   boxShadow: 24,
   p: 4,
-  overflow: "auto",
   outline: "none",
 };
 
 export default function AppModal(props) {
-  const { open, handleClose, children } = props;
+  const { open, handleClose, children, removeX = false } = props;
 
   return (
     <div>
@@ -30,14 +29,18 @@ export default function AppModal(props) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <div
-            className="cursor-pointer text-red-500 absolute top-[1px] left-[-1px]  "
-            onClick={handleClose}
-          >
-            {" "}
-            <ClearOutlinedIcon style={{ fontSize: 50 }} />
+          {!removeX ? (
+            <div
+              className=" fixed cursor-pointer text-red-500  top-[6px] left-[-1px] font-roboto  "
+              onClick={handleClose}
+            >
+              <ClearOutlinedIcon style={{ fontSize: 30 }} />
+              <span>Close</span>
+            </div>
+          ) : null}
+          <div style={{ overflow: "auto", width: "100%", height: "100%" }}>
+            {children}
           </div>
-          {children}
         </Box>
       </Modal>
     </div>

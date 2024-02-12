@@ -193,7 +193,7 @@ const Cards = ({
             </div>
           </div>
           <div
-            className="w-[100%] text-[22px] font-roboto uppercase truncate"
+            className="w-[100%] text-[18px] font-roboto uppercase truncate"
             style={{ color: settings.content }}
           >
             {title}

@@ -12,6 +12,7 @@ import StarRateIcon from "@mui/icons-material/StarRate";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import logo from "./Images/logo.png";
+
 import {
   Box,
   Input,
@@ -20,6 +21,9 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
+import Engagement from "./engagement";
+import Login from "./Login";
+import Signup from "./Signup";
 
 const responsive = {
   superLargeDesktop: {
@@ -53,6 +57,14 @@ function Main({ Rank, height, width }) {
   const [image, setImage] = useState([]);
   const [topContent, setTopContent] = useState([]);
   const [hubSettings, setHubSettings] = useState();
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupName, setSignupName] = useState("");
+  const [mustLogin, setMustLogin] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [showSignupModal, setShowSignupModal] = useState(false);
 
   useEffect(() => {
     getHubSelected();
@@ -120,8 +132,9 @@ function Main({ Rank, height, width }) {
   };
 
   const saveHubSettings = (data) => {
-    let settings = {};
-    data.map((item) => {
+    let settings = { name: data.name };
+
+    data.settings.map((item) => {
       switch (item.name) {
         case "logo":
           localStorage.setItem("logo", item.value);
@@ -152,6 +165,12 @@ function Main({ Rank, height, width }) {
           settings.background = item.value;
           break;
         case "registration":
+          if (item.value == 1) {
+            // check that token key is null
+            if (localStorage.getItem("token") == null) {
+              setMustLogin(true);
+            }
+          }
           localStorage.setItem("registration", item.value);
           settings.registration = item.value;
           break;
@@ -175,7 +194,8 @@ function Main({ Rank, height, width }) {
         if (data.status == "success") {
           // save the hub id to to local storage
           localStorage.setItem("hub", data.data.id);
-          saveHubSettings(data.data.settings);
+          localStorage.setItem("hubName", data.data.name);
+          saveHubSettings(data.data);
           createNewUser();
           fetchAPI();
           await fetchImage();
@@ -218,13 +238,50 @@ function Main({ Rank, height, width }) {
   };
 
   const handleClose = () => {
+    endViewing();
     setOpen(false);
   };
+  const updateViwsCounts = (id) => {
+    let user = localStorage.getItem("user");
+    let userType = "user";
+    if (user.split("_").length > 1) {
+      userType = "guest";
+    } else {
+      userType = "user";
+    }
+    let data = {
+      user_id: user,
+      content_id: id,
+      user_type: userType,
+    };
 
+    axios
+      .post("https://api.hubeei.skillzserver.com/api/content/save-views", data)
+      .then((response) => {
+        console.log(response);
+        localStorage.setItem("viewing", response.data.data.id);
+      })
+      .catch((error) => {});
+  };
+
+  const endViewing = () => {
+    let viewingId = localStorage.getItem("viewing");
+    axios
+      .get(
+        `https://api.hubeei.skillzserver.com/api/content/update-content-views/${viewingId}`
+      )
+      .then((response) => {
+        localStorage.removeItem("viewing");
+        console.log(response.data);
+      })
+      .catch(() => {});
+  };
   const handleOpen = (items) => {
     let works = work;
     setWork(works + 1);
     setSelectedContent(items);
+    //create the link for total views
+    updateViwsCounts(items.id);
     setOpen(true);
   };
 
@@ -304,6 +361,80 @@ function Main({ Rank, height, width }) {
     overflow: "auto",
   };
 
+  const setLoginEmailFunction = (e) => {
+    setLoginEmail(e);
+  };
+
+  const handleLoginFunction = () => {
+    setLoginLoading(true);
+    let data = {
+      hub_id: localStorage.getItem("hub"),
+      email: loginEmail,
+      password: loginPassword,
+    };
+    axios
+      .post("https://api.hubeei.skillzserver.com/api/subscription/login", data)
+      .then((response) => {
+        if (response.data.status == "success") {
+          let responseData = response.data.data;
+          localStorage.setItem("token", responseData.token);
+          localStorage.setItem("user", responseData.id);
+          setLoginLoading(false);
+          setMustLogin(false);
+          // close modal
+        }
+      })
+      .catch((error) => {
+        setLoginLoading(false);
+      });
+  };
+  const setLoginPasswordFunction = (e) => {
+    setLoginPassword(e);
+  };
+  const showSignupModalFunction = () => {
+    setShowSignupModal(true);
+  };
+
+  const closeSignupModalFunction = () => {
+    setShowSignupModal(false);
+  };
+
+  const setSignupEmailFunction = (e) => {
+    setSignupEmail(e);
+  };
+  const setSignupPasswordFunction = (e) => {
+    setSignupPassword(e);
+  };
+
+  const setSignupNameFunction = (e) => {
+    setSignupName(e);
+  };
+
+  const handleSignupFunction = () => {
+    setLoginLoading(true);
+    let data = {
+      hub_id: localStorage.getItem("hub"),
+      email: signupEmail,
+      password: signupPassword,
+      name: signupName,
+    };
+    axios
+      .post(
+        "https://api.hubeei.skillzserver.com/api/subscription/register",
+        data
+      )
+      .then((response) => {
+        if (response.data.status == "success") {
+          setLoginLoading(false);
+          closeSignupModalFunction();
+          // close modal
+        }
+      })
+      .catch((error) => {
+        setLoginLoading(false);
+      });
+  };
+
   return (
     <>
       {initLoader ? (
@@ -311,6 +442,35 @@ function Main({ Rank, height, width }) {
           className={`pb-10 min-h-[100vh] h-100% overflow-auto`}
           style={{ backgroundColor: hubSettings.background }}
         >
+          <AppModal
+            open={showSignupModal}
+            style={{ backdropFilter: "blur(1px)" }}
+            handleClose={closeSignupModalFunction}
+          >
+            <Signup
+              setSignupName={setSignupNameFunction}
+              setSignupEmail={setSignupEmailFunction}
+              handleSignup={handleSignupFunction}
+              setSignupPassword={setSignupPasswordFunction}
+              settings={hubSettings}
+              loading={loginLoading}
+            />
+          </AppModal>
+
+          <AppModal
+            open={mustLogin}
+            removeX={true}
+            style={{ backdropFilter: "blur(1px)" }}
+          >
+            <Login
+              setLoginEmail={setLoginEmailFunction}
+              handleLogin={handleLoginFunction}
+              setLoginPassword={setLoginPasswordFunction}
+              settings={hubSettings}
+              loading={loginLoading}
+              displaySignup={showSignupModalFunction}
+            />
+          </AppModal>
           <AppModal
             open={open}
             handleClose={handleClose}
@@ -327,7 +487,7 @@ function Main({ Rank, height, width }) {
                       {selectedContent.name}
                     </h2>
                   </div>
-                  <div className="h-[600px]">
+                  <div className="max-h-[600px]">
                     <Contents data={selectedContent} />
                   </div>
                   <div className="flex justify-end mt-2">
@@ -335,7 +495,9 @@ function Main({ Rank, height, width }) {
                       <div>
                         <VisibilityIcon className="text-[#DCD427]" />
                       </div>
-                      <div className="text-[#fff]">{selectedContent.views}</div>
+                      <div className="text-[#fff]">
+                        {selectedContent.views.length}
+                      </div>
                     </div>
                     <div className="flex px-2 justify-between rounded-full border-2 border-[#DCD427] min-w-[70px] mx-4  ">
                       <div>
@@ -360,9 +522,11 @@ function Main({ Rank, height, width }) {
                       {selectedContent.content_description}
                     </div>
                   </div>
-
-                  <div>list of likes</div>
-                  <div>engagement</div>
+                  <div>
+                    {selectedContent.with_engagement == 1 ? (
+                      <Contents data={selectedContent} withEngagmnet={true} />
+                    ) : null}
+                  </div>
                 </div>
               ) : null}
             </Box>
@@ -370,11 +534,26 @@ function Main({ Rank, height, width }) {
           <div className="  ">
             {hubSettings.sportlight == 1 ? (
               image.length > 0 ? (
-                <Slide
-                  handleOpen={handleOpen}
-                  data={image}
-                  settings={hubSettings}
-                />
+                <div className="">
+                  <div className="sm:ml-[200px] absolute top-8 left-0 sm:mb-[4%] sm:w-[15%]  h-[20%]  z-50 ">
+                    <img
+                      src={logo}
+                      alt=""
+                      className="max-w-full max-h-full z-50"
+                    />
+                    <h2
+                      className="w-[100%] text-center mt-2"
+                      style={{ color: hubSettings.category }}
+                    >
+                      {hubSettings.name}
+                    </h2>
+                  </div>
+                  <Slide
+                    handleOpen={handleOpen}
+                    data={image}
+                    settings={hubSettings}
+                  />
+                </div>
               ) : (
                 <div>
                   <SideIcons
@@ -420,14 +599,14 @@ function Main({ Rank, height, width }) {
           </div>
           <div className=" relative z-40 w-[90%] mx-auto">
             <div className="">
-              <div className=" mt-[-130px]">
+              <div className=" mt-[-130px] ">
                 <div className="">
-                  <h1
-                    className={`  uppercase`}
+                  <h3
+                    className={`  uppercase font-roboto `}
                     style={{ color: hubSettings.category }}
                   >
                     Most Viewed
-                  </h1>
+                  </h3>
                   <Carousel responsive={responsive} keyBoardControl={true}>
                     {topContent.map((value, i, f) => (
                       <div>
@@ -451,13 +630,13 @@ function Main({ Rank, height, width }) {
                 {category.length > 0
                   ? category.map((categoryItems) => {
                       return categoryItems.content.length > 0 ? (
-                        <div>
-                          <h1
-                            className={`uppercase`}
+                        <div className="mt-4">
+                          <h3
+                            className={`uppercase font-roboto`}
                             style={{ color: hubSettings.category }}
                           >
                             {categoryItems.name}{" "}
-                          </h1>
+                          </h3>
                           <Carousel
                             responsive={responsive}
                             infinite={true}
@@ -478,17 +657,13 @@ function Main({ Rank, height, width }) {
                           </Carousel>
                         </div>
                       ) : (
-                        <div>
-                          <h1
-                            className={` uppercase`}
+                        <div className="mt-4">
+                          <h3
+                            className={` uppercase font-roboto`}
                             style={{ color: hubSettings.category }}
                           >
                             {categoryItems.name}{" "}
-                          </h1>
-                          <h2 style={{ color: hubSettings.content }}>
-                            {" "}
-                            No Available Content For this Category
-                          </h2>
+                          </h3>
                         </div>
                       );
                     })
@@ -496,7 +671,7 @@ function Main({ Rank, height, width }) {
               </div>
             ) : (
               <div className=" w-[86%]" style={{ margin: "-20px auto" }}>
-                <h1 className="text-white">Liked Content </h1>
+                <h3 className="text-white font-roboto">Liked Content </h3>
                 <Carousel
                   responsive={responsive}
                   infinite={true}
