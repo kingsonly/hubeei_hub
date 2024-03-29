@@ -15,17 +15,16 @@ function Video({ data }) {
 
   return (
     <div>
-       {isPlaying ? <p>Video is currently playing.</p> : <p>video is not playing.</p>}
+      {isPlaying ? <p></p> : <p></p>}
       <ReactPlayer
         ref={playerRef}
-        url={data.content}  // Replace with the URL of your Video
+        url={data.content} // Replace with the URL of your Video
         controls={true}
         width="100%"
-        height="500px" 
+        height="500px"
         onPlay={handlePlay}
         onPause={handlePause}
       />
-     
     </div>
   );
 }

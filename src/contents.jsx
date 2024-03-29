@@ -5,6 +5,7 @@ import Engagement from "./engagement";
 
 const Contents = ({ data, withEngagmnet = false }) => {
   const renderFileContent = () => {
+    console.log("i am the main", data);
     if (withEngagmnet) {
       return <Engagement content={data} />;
     } else {
@@ -12,6 +13,7 @@ const Contents = ({ data, withEngagmnet = false }) => {
         case "audio":
           return <Audio data={data} />;
         case "video":
+        case "link":
           return <Video data={data} />;
         case "pdf":
           return <Pdfdisplay data={data} />;

@@ -44,7 +44,7 @@ function Slide({ handleOpen, data, settings }) {
     bottom: "-1px",
     left: "-1px",
   };
-  //absolute ${browser}  sm:bottom-[10.01%]
+  //absolute ${browser}  lg:bottom-[10.01%]
   return (
     <div>
       <div style={beforeStyles}></div>
@@ -54,7 +54,7 @@ function Slide({ handleOpen, data, settings }) {
             <CCarouselItem key={item.id}>
               <HeaderHero
                 imageUrl={`https://api.hubeei.skillzserver.com/public${item.thumbnail}`}
-                handleOpen={handleOpen}
+                handleOpen={() => handleOpen(item)}
                 data={item}
                 settings={settings}
               />
@@ -65,7 +65,7 @@ function Slide({ handleOpen, data, settings }) {
         )}
       </CCarousel>
       <div
-        className={`absolute hidden   sm:bottom-[10.01%]`}
+        className={`absolute hidden   lg:bottom-[10.01%]`}
         style={afterStyles}
       ></div>
     </div>

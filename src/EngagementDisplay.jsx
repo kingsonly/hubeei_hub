@@ -28,7 +28,7 @@ function EngagementDisplay({
         return found;
       case "general":
         return (
-          <div className="sm:w-[100%] border-l-2 border-dotted border-[#000]">
+          <div className="lg:w-[100%] border-l-2 border-dotted border-[#000]">
             {convertStats(optionId)}%
           </div>
         );
@@ -57,20 +57,20 @@ function EngagementDisplay({
         {data.question}
       </div>
 
-      <div className="options grid-cols-1 sm:grid sm:grid-cols-2 gap-4">
+      <div className="options grid-cols-1 lg:grid lg:grid-cols-2 gap-4">
         {data.options.map((item, index) => (
           <div
             onClick={
               type == "default" ? () => handleSelection(item.id, index) : null
             }
-            className={`bg-gray-300 mt-4 sm:mt-0 shadow-inner rounded-lg flex items-center h-[40px] ${border(
+            className={`bg-gray-300 mt-4 lg:mt-0 shadow-inner rounded-lg flex items-center h-[40px] ${border(
               item.answer_rank
             )}`}
             style={{ color: color }}
           >
             <li className="option-li block flex justify-between w-[100%] font-roboto text-[16px]">
               <div className="w-[60%] capitalize">{item.answer}</div>
-              <div className="w-[30%] flex sm:justify-end sm:pr-4">
+              <div className="w-[30%] flex lg:justify-end lg:pr-4">
                 {type == "default"
                   ? renderChecks(index, data)
                   : renderChecks(index, data, item.id)}
