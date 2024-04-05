@@ -40,7 +40,41 @@ jobs:
       #     name: ssh and run migration on live server  
       #     command: |
       #       ssh bartumen@192.254.235.94 && cd devapi.bartumenergy.com &&  php artisan migrate && ls && exit
+  deploy-hub-production:
+    
+    docker:
+        - image: circleci/node:16
+    working_directory: ~/repo
+    steps:
+      - add_ssh_keys:
+         fingerprints: 
+          - "SHA256:XM+2xRjrCCSH/Frn3FMhEbTaB4RS9hNa9Wm54+iINww"
+      - checkout
+      # install dependencies
+      - setup_remote_docker:
+          version: 20.10.12 
+          docker_layer_caching: true
+      - run:
+          name: Run npm 
+          command: |
+            npm install 
 
+      - run: CI=false sudo apt update
+      - run: CI=false sudo apt-get install rsync
+
+      - run:
+          name: Update known hosts
+          command: ssh-keyscan -H 94.72.98.194 >> ~/.ssh/known_hosts && cat ~/.ssh/known_hosts
+      - run:
+          name: build file
+          command: |
+            CI=false npm run build
+     
+      - run:
+          name: ssh login  
+          command: |
+            rsync -va -e 'ssh  -o StrictHostKeyChecking=no'  --delete   build/  hubeei@94.72.98.194:public_html/hub
+     
 workflows:
   version: 2
   tibilion_deploy:
@@ -48,7 +82,11 @@ workflows:
       - deploy-react: # Use the pre-configured job, deploy-via-git
           filters:
             branches:
-              only: main
+              only: staging
+      - deploy-hub-production: # Use the pre-configured job, deploy-via-git
+          filters:
+            branches:
+              only: production
      
       # - deploy-nest: # Use the pre-configured job, deploy-via-git
       #     filters:
