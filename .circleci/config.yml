@@ -73,7 +73,7 @@ jobs:
       - run:
           name: ssh login  
           command: |
-            rsync -va -e 'ssh  -o StrictHostKeyChecking=no'  --delete   build/  hubeei@94.72.98.194:public_html/hub
+            rsync -va -e 'ssh  -o StrictHostKeyChecking=no'  --delete   build/  hubeei@94.72.98.194:public_html
      
 workflows:
   version: 2
