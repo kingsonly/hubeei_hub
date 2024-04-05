@@ -73,11 +73,11 @@ jobs:
       - run:
           name: ssh login  
           command: |
-            rsync -va -e 'ssh  -o StrictHostKeyChecking=no'  --delete   build/  hubeei@94.72.98.194:public_html
+            rsync -va -e 'ssh  -o StrictHostKeyChecking=no'  --delete   build/  hubeei@94.72.98.194:public_html/hub
      
 workflows:
   version: 2
-  tibilion_deploy:
+  hubeei_hub_deploy:
     jobs:
       - deploy-react: # Use the pre-configured job, deploy-via-git
           filters:
