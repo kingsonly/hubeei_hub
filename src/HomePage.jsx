@@ -93,7 +93,7 @@ function Main({ Rank, height, width }) {
     };
     try {
       const response = await axios.get(
-        `https://api.hubeei.skillzserver.com/api/content/get-top-ten-views/${hub}`,
+        `${process.env.REACT_APP_BACKEND_API}/api/content/get-top-ten-views/${hub}`,
         { headers }
       );
       if (response.data.status == "success") {
@@ -110,7 +110,7 @@ function Main({ Rank, height, width }) {
     setSearchLoaderStatus(true);
 
     await axios
-      .post(`https://api.hubeei.skillzserver.com/api/content/search/${hub}`, {
+      .post(`${process.env.REACT_APP_BACKEND_API}/api/content/search/${hub}`, {
         query: searchItem,
       })
       .then((res) => {
@@ -193,7 +193,7 @@ function Main({ Rank, height, width }) {
     // make an axos call to server to get the id of the hub, and also get hub settings
     await axios
       .get(
-        `https://api.hubeei.skillzserver.com/api/hub/get-users-hubs-by-hub-name/${hub}`
+        `${process.env.REACT_APP_BACKEND_API}/api/hub/get-users-hubs-by-hub-name/${hub}`
       )
       .then(async (response) => {
         let data = response.data;
@@ -225,7 +225,7 @@ function Main({ Rank, height, width }) {
     let hub = localStorage.getItem("hub");
     let headers = { hub: hub };
     axios
-      .get(`https://api.hubeei.skillzserver.com/api/content/view/${id}`, {
+      .get(`${process.env.REACT_APP_BACKEND_API}/api/content/view/${id}`, {
         headers,
       })
       .then((response) => {
@@ -262,7 +262,7 @@ function Main({ Rank, height, width }) {
     };
 
     axios
-      .post("https://api.hubeei.skillzserver.com/api/content/save-views", data)
+      .post("${process.env.REACT_APP_BACKEND_API}/api/content/save-views", data)
       .then((response) => {
         console.log(response);
         localStorage.setItem("viewing", response.data.data.id);
@@ -274,7 +274,7 @@ function Main({ Rank, height, width }) {
     let viewingId = localStorage.getItem("viewing");
     axios
       .get(
-        `https://api.hubeei.skillzserver.com/api/content/update-content-views/${viewingId}`
+        `${process.env.REACT_APP_BACKEND_API}/api/content/update-content-views/${viewingId}`
       )
       .then((response) => {
         localStorage.removeItem("viewing");
@@ -298,7 +298,7 @@ function Main({ Rank, height, width }) {
     };
     let hub = localStorage.getItem("hub");
     await axios
-      .get(`https://api.hubeei.skillzserver.com/api/category-content/${hub}`, {
+      .get(`${process.env.REACT_APP_BACKEND_API}/api/category-content/${hub}`, {
         headers,
       })
       .then((response) => {
@@ -320,7 +320,7 @@ function Main({ Rank, height, width }) {
       user: user,
     };
     await axios
-      .get(`https://api.hubeei.skillzserver.com/api/content/liked/${user}`, {
+      .get(`${process.env.REACT_APP_BACKEND_API}/api/content/liked/${user}`, {
         headers,
       })
       .then((response) => {
@@ -345,7 +345,7 @@ function Main({ Rank, height, width }) {
     let hub = localStorage.getItem("hub");
     await axios
       .get(
-        `https://api.hubeei.skillzserver.com/api/content/get-spotlight-content/${hub}`
+        `${process.env.REACT_APP_BACKEND_API}/api/content/get-spotlight-content/${hub}`
       )
       .then((response) => {
         let data = response.data;
@@ -386,7 +386,7 @@ function Main({ Rank, height, width }) {
       password: loginPassword,
     };
     axios
-      .post("https://api.hubeei.skillzserver.com/api/subscription/login", data)
+      .post(`${process.env.REACT_APP_BACKEND_API}/api/subscription/login`, data)
       .then((response) => {
         if (response.data.status == "success") {
           let responseData = response.data.data;
@@ -433,7 +433,7 @@ function Main({ Rank, height, width }) {
     };
     axios
       .post(
-        "https://api.hubeei.skillzserver.com/api/subscription/register",
+        `${process.env.REACT_APP_BACKEND_API}/api/subscription/register`,
         data
       )
       .then((response) => {

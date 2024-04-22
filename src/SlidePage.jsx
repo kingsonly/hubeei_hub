@@ -53,7 +53,7 @@ function Slide({ handleOpen, data, settings }) {
           data.map((item) => (
             <CCarouselItem key={item.id}>
               <HeaderHero
-                imageUrl={`https://api.hubeei.skillzserver.com/public${item.thumbnail}`}
+                imageUrl={`${process.env.REACT_APP_BACKEND_API}/public${item.thumbnail}`}
                 handleOpen={() => handleOpen(item)}
                 data={item}
                 settings={settings}

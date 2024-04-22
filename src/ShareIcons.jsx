@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { EmailIcon, EmailShareButton } from "react-share";
 import { WhatsappIcon, WhatsappShareButton } from "react-share";
 import { TwitterIcon, TwitterShareButton } from "react-share";
@@ -8,6 +8,21 @@ import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 
 const ShareDialog = ({ close, id }) => {
   const [link, setLink] = useState(window.location.href);
+
+  useEffect(() => {
+    checkLocal();
+  }, []);
+
+  const checkLocal = () => {
+    let hubUrl = window.location.href.split(".")[0];
+    let local = window.location.href.split(".")[1].split(":")[0];
+    if (local == "localhost") {
+      setLink(`${hubUrl}.${window.location.href.split(".")[1].split("?")[0]}`);
+    } else {
+      setLink(`${hubUrl}.${process.env.REACT_APP_SHARE_LINK}`);
+    }
+    console.log("i am local ", local);
+  };
   const handleClose = (e) => {
     e.stopPropagation(); // Stop event propagation
     close();

@@ -56,7 +56,7 @@ const Cards = ({
 
     try {
       const response = await axios.get(
-        "https://api.hubeei.skillzserver.com/api/content/like-un-like/" + id,
+        `${process.env.REACT_APP_BACKEND_API}/api/content/like-un-like/${id}`,
         { headers }
       );
       if (response.data.status === "success") {
@@ -88,12 +88,12 @@ const Cards = ({
 
   const cardStyle = {
     backgroundSize: "contain", // Default background size
-    backgroundImage: `url(https://api.hubeei.skillzserver.com/public/${folder1}/${folder2}/${imageUrlSize}${image})`,
+    backgroundImage: `url(${process.env.REACT_APP_BACKEND_API}/public/${folder1}/${folder2}/${imageUrlSize}${image})`,
   };
 
   const cardStyleHalf = {
     backgroundSize: "contain", // Default background size
-    backgroundImage: `url(https://api.hubeei.skillzserver.com/public/${folder1}/${folder2}/${imageUrlSizeHalf}${image})`,
+    backgroundImage: `url(${process.env.REACT_APP_BACKEND_API}/public/${folder1}/${folder2}/${imageUrlSizeHalf}${image})`,
   };
 
   const openShareDialog = (e) => {
