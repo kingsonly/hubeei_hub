@@ -88,12 +88,12 @@ const Cards = ({
 
   const cardStyle = {
     backgroundSize: "contain", // Default background size
-    backgroundImage: `url(${process.env.REACT_APP_BACKEND_API}/public/${folder1}/${folder2}/${imageUrlSize}${image})`,
+    backgroundImage: `url(${process.env.REACT_APP_BACKEND_API}/${folder1}/${folder2}/${imageUrlSize}${image})`,
   };
 
   const cardStyleHalf = {
     backgroundSize: "contain", // Default background size
-    backgroundImage: `url(${process.env.REACT_APP_BACKEND_API}/public/${folder1}/${folder2}/${imageUrlSizeHalf}${image})`,
+    backgroundImage: `url(${process.env.REACT_APP_BACKEND_API}/${folder1}/${folder2}/${imageUrlSizeHalf}${image})`,
   };
 
   const openShareDialog = (e) => {

@@ -65,6 +65,7 @@ function Main({ Rank, height, width }) {
   const [mustLogin, setMustLogin] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   const [showSignupModal, setShowSignupModal] = useState(false);
+  const [parentCustomFields, setParentCustomFields] = useState([]);
 
   useEffect(() => {
     getHubSelected();
@@ -262,7 +263,7 @@ function Main({ Rank, height, width }) {
     };
 
     axios
-      .post("${process.env.REACT_APP_BACKEND_API}/api/content/save-views", data)
+      .post(`${process.env.REACT_APP_BACKEND_API}/api/content/save-views`, data)
       .then((response) => {
         console.log(response);
         localStorage.setItem("viewing", response.data.data.id);
@@ -430,6 +431,7 @@ function Main({ Rank, height, width }) {
       email: signupEmail,
       password: signupPassword,
       name: signupName,
+      additional_data: JSON.stringify(parentCustomFields),
     };
     axios
       .post(
@@ -446,6 +448,17 @@ function Main({ Rank, height, width }) {
       .catch((error) => {
         setLoginLoading(false);
       });
+  };
+
+  const setCustomFieldsParent = (data) => {
+    let newData = data.map((v) => ({ ...v, value: "" }));
+    setParentCustomFields(newData);
+  };
+
+  const onChangeCustomFields = (value, index) => {
+    let data = [...parentCustomFields];
+    data[index].value = value;
+    setParentCustomFields(data);
   };
 
   return (
@@ -467,6 +480,8 @@ function Main({ Rank, height, width }) {
               setSignupPassword={setSignupPasswordFunction}
               settings={hubSettings}
               loading={loginLoading}
+              setCustomFieldsParent={setCustomFieldsParent}
+              onChangeCustomFields={onChangeCustomFields}
             />
           </AppModal>
 

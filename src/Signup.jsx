@@ -1,7 +1,8 @@
 import { CircularProgress, Typography } from "@mui/material";
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import ActionButton from "./ActionButton";
 import TextInput from "./TextInput";
+import axios from "axios";
 
 const style = {
   backdropFilter: "blur(5px)",
@@ -25,7 +26,39 @@ export default function Signup(props) {
     setSignupPassword,
     settings,
     loading,
+    setCustomFieldsParent,
+    onChangeCustomFields,
   } = props;
+
+  const [customFields, setCustomFields] = useState([]);
+
+  useEffect(() => {
+    getRegistrationCustomFields();
+  }, []);
+
+  const getRegistrationCustomFields = async () => {
+    let hubId = localStorage.getItem("hub");
+    await axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_API}/api/register-settings-view/${hubId}`
+      )
+      .then((res) => {
+        console.log(
+          "check this out",
+          res.data.data.create_hub_registration_settings
+            .hub_registration_setting_fields
+        );
+        setCustomFieldsParent(
+          res.data.data.create_hub_registration_settings
+            .hub_registration_setting_fields
+        );
+        setCustomFields(
+          res.data.data.create_hub_registration_settings
+            .hub_registration_setting_fields
+        );
+      })
+      .catch((error) => {});
+  };
 
   return (
     <div className="flex w-[100%]  justify-center h-[100%] items-center">
@@ -77,6 +110,28 @@ export default function Signup(props) {
             }}
           />
         </div>
+        {customFields?.map((value, index) => (
+          <div className="mt-4">
+            <TextInput
+              id="outlined-multiline-flexible"
+              label={value.name}
+              inputProps={{
+                style: { fontFamily: "Arial", color: "white" },
+              }}
+              style={{ color: "white" }}
+              maxRows={10}
+              onChange={(e) => onChangeCustomFields(e.target.value, index)}
+              sx={{
+                "& .MuiFormLabel-root": {
+                  color: "white",
+                },
+                "& .MuiFormLabel-root.Mui-focused": {
+                  color: "white",
+                },
+              }}
+            />
+          </div>
+        ))}
         <div className="mt-4">
           <TextInput
             id="outlined-multiline-flexible"
