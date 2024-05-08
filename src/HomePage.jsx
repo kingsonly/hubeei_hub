@@ -7,8 +7,6 @@ import "react-multi-carousel/lib/styles.css";
 import AppModal from "./AppModal";
 import Contents from "./contents";
 import axios from "axios";
-import RankIcon from "./RankIcon";
-import StarRateIcon from "@mui/icons-material/StarRate";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import logo from "./Images/logo.png";
@@ -46,6 +44,8 @@ const responsive = {
 };
 
 function Main({ Rank, height, width }) {
+  const [active, setActive] = useState("home");
+  const [searchItem, setSearchItem] = useState("");
   const [defaultContent, setDefaultContent] = useState(false);
   const [initLoader, setInitLoader] = useState(false);
   const [open, setOpen] = useState(false);
@@ -65,6 +65,7 @@ function Main({ Rank, height, width }) {
   const [mustLogin, setMustLogin] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   const [showSignupModal, setShowSignupModal] = useState(false);
+  const [parentCustomFields, setParentCustomFields] = useState([]);
 
   useEffect(() => {
     getHubSelected();
@@ -87,9 +88,14 @@ function Main({ Rank, height, width }) {
 
   const fetchTopContent = async () => {
     let hub = localStorage.getItem("hub");
+    const user = localStorage.getItem("user");
+    const headers = {
+      user: user,
+    };
     try {
       const response = await axios.get(
-        `https://api.hubeei.skillzserver.com/api/content/get-top-ten-views/${hub}`
+        `${process.env.REACT_APP_BACKEND_API}/api/content/get-top-ten-views/${hub}`,
+        { headers }
       );
       if (response.data.status == "success") {
         setTopContent(response.data.data);
@@ -103,32 +109,30 @@ function Main({ Rank, height, width }) {
   const handleSearch = async (searchItem) => {
     let hub = localStorage.getItem("hub");
     setSearchLoaderStatus(true);
-    try {
-      const response = await fetch(
-        `https://api.hubeei.skillzserver.com/api/content/search/${hub}`,
-        {
-          method: "POST",
-          headers: {},
-          body: JSON.stringify({ query: searchItem }),
+
+    await axios
+      .post(`${process.env.REACT_APP_BACKEND_API}/api/content/search/${hub}`, {
+        query: searchItem,
+      })
+      .then((res) => {
+        if (res.data.status == "success") {
+          setCategory(res.data.data);
+          setSearchLoaderStatus(false);
+          setSearchIcon(false);
+          setSearchItem("");
+          setActive("search");
+        } else {
+          setSearchLoaderStatus(false);
+          setSearchIcon(false);
+          setSearchItem("");
         }
-      );
-
-      const data = await response.json();
-
-      if (data.status == "success") {
-        setCategory(data.data);
+      })
+      .catch((error) => {
+        console.error(`Error during API request:, ${error}`);
         setSearchLoaderStatus(false);
         setSearchIcon(false);
-      } else {
-        console.error(`API request failed: ${response.statusText}`);
-        setSearchLoaderStatus(false);
-        setSearchIcon(false);
-      }
-    } catch (error) {
-      console.error(`Error during API request:, ${error}`);
-      setSearchLoaderStatus(false);
-      setSearchIcon(false);
-    }
+        setSearchItem("");
+      });
   };
 
   const saveHubSettings = (data) => {
@@ -160,9 +164,12 @@ function Main({ Rank, height, width }) {
           localStorage.setItem("category", item.value);
           settings.category = item.value;
           break;
-        case "backgound":
-          localStorage.setItem("backeground", item.value);
+        case "background":
+          localStorage.setItem("background", item.value);
           settings.background = item.value;
+        case "topten":
+          localStorage.setItem("topten", item.value);
+          settings.topten = item.value;
           break;
         case "registration":
           if (item.value == 1) {
@@ -187,7 +194,7 @@ function Main({ Rank, height, width }) {
     // make an axos call to server to get the id of the hub, and also get hub settings
     await axios
       .get(
-        `https://api.hubeei.skillzserver.com/api/hub/get-users-hubs-by-hub-name/${hub}`
+        `${process.env.REACT_APP_BACKEND_API}/api/hub/get-users-hubs-by-hub-name/${hub}`
       )
       .then(async (response) => {
         let data = response.data;
@@ -219,7 +226,7 @@ function Main({ Rank, height, width }) {
     let hub = localStorage.getItem("hub");
     let headers = { hub: hub };
     axios
-      .get(`https://api.hubeei.skillzserver.com/api/content/view/${id}`, {
+      .get(`${process.env.REACT_APP_BACKEND_API}/api/content/view/${id}`, {
         headers,
       })
       .then((response) => {
@@ -256,7 +263,7 @@ function Main({ Rank, height, width }) {
     };
 
     axios
-      .post("https://api.hubeei.skillzserver.com/api/content/save-views", data)
+      .post(`${process.env.REACT_APP_BACKEND_API}/api/content/save-views`, data)
       .then((response) => {
         console.log(response);
         localStorage.setItem("viewing", response.data.data.id);
@@ -268,7 +275,7 @@ function Main({ Rank, height, width }) {
     let viewingId = localStorage.getItem("viewing");
     axios
       .get(
-        `https://api.hubeei.skillzserver.com/api/content/update-content-views/${viewingId}`
+        `${process.env.REACT_APP_BACKEND_API}/api/content/update-content-views/${viewingId}`
       )
       .then((response) => {
         localStorage.removeItem("viewing");
@@ -292,7 +299,7 @@ function Main({ Rank, height, width }) {
     };
     let hub = localStorage.getItem("hub");
     await axios
-      .get(`https://api.hubeei.skillzserver.com/api/category-content/${hub}`, {
+      .get(`${process.env.REACT_APP_BACKEND_API}/api/category-content/${hub}`, {
         headers,
       })
       .then((response) => {
@@ -300,6 +307,7 @@ function Main({ Rank, height, width }) {
         if (data.status == "success") {
           setCategory(response.data.data);
           setDefaultContent(true);
+          setActive("home");
         }
       })
       .catch((error) => {
@@ -313,15 +321,21 @@ function Main({ Rank, height, width }) {
       user: user,
     };
     await axios
-      .get(`https://api.hubeei.skillzserver.com/api/content/liked/${user}`, {
+      .get(`${process.env.REACT_APP_BACKEND_API}/api/content/liked/${user}`, {
         headers,
       })
       .then((response) => {
         let data = response.data;
         if (data.status == "success") {
+          setActive("liked");
+          response.data.data.map((data, index) => {
+            console.log("verify daa", data);
+            response.data.data[index]["like"] = true;
+          });
           setCategory(response.data.data);
           setDefaultContent(false);
         }
+        console.log("i am active", active);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -332,7 +346,7 @@ function Main({ Rank, height, width }) {
     let hub = localStorage.getItem("hub");
     await axios
       .get(
-        `https://api.hubeei.skillzserver.com/api/content/get-spotlight-content/${hub}`
+        `${process.env.REACT_APP_BACKEND_API}/api/content/get-spotlight-content/${hub}`
       )
       .then((response) => {
         let data = response.data;
@@ -373,7 +387,7 @@ function Main({ Rank, height, width }) {
       password: loginPassword,
     };
     axios
-      .post("https://api.hubeei.skillzserver.com/api/subscription/login", data)
+      .post(`${process.env.REACT_APP_BACKEND_API}/api/subscription/login`, data)
       .then((response) => {
         if (response.data.status == "success") {
           let responseData = response.data.data;
@@ -417,10 +431,11 @@ function Main({ Rank, height, width }) {
       email: signupEmail,
       password: signupPassword,
       name: signupName,
+      additional_data: JSON.stringify(parentCustomFields),
     };
     axios
       .post(
-        "https://api.hubeei.skillzserver.com/api/subscription/register",
+        `${process.env.REACT_APP_BACKEND_API}/api/subscription/register`,
         data
       )
       .then((response) => {
@@ -433,6 +448,17 @@ function Main({ Rank, height, width }) {
       .catch((error) => {
         setLoginLoading(false);
       });
+  };
+
+  const setCustomFieldsParent = (data) => {
+    let newData = data.map((v) => ({ ...v, value: "" }));
+    setParentCustomFields(newData);
+  };
+
+  const onChangeCustomFields = (value, index) => {
+    let data = [...parentCustomFields];
+    data[index].value = value;
+    setParentCustomFields(data);
   };
 
   return (
@@ -454,6 +480,8 @@ function Main({ Rank, height, width }) {
               setSignupPassword={setSignupPasswordFunction}
               settings={hubSettings}
               loading={loginLoading}
+              setCustomFieldsParent={setCustomFieldsParent}
+              onChangeCustomFields={onChangeCustomFields}
             />
           </AppModal>
 
@@ -490,7 +518,7 @@ function Main({ Rank, height, width }) {
                   <div className="max-h-[600px]">
                     <Contents data={selectedContent} />
                   </div>
-                  <div className="flex justify-end mt-2">
+                  {/* <div className="flex justify-end mt-2">
                     <div className="flex px-2 justify-between rounded-full border-2 border-[#DCD427] min-w-[70px]">
                       <div>
                         <VisibilityIcon className="text-[#DCD427]" />
@@ -505,7 +533,7 @@ function Main({ Rank, height, width }) {
                       </div>
                       <div className="text-[#fff]">0</div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="mt-4">
                     <div>
                       <h1
@@ -535,14 +563,14 @@ function Main({ Rank, height, width }) {
             {hubSettings.sportlight == 1 ? (
               image.length > 0 ? (
                 <div className="">
-                  <div className="sm:ml-[200px] absolute top-8 left-0 sm:mb-[4%] sm:w-[15%]  h-[20%]  z-50 ">
+                  <div className="md:ml-[100px] lg:ml-[200px] top-1 absolute lg:top-8 left-0 lg:mb-[4%] lg:w-[15%]  h-[20%]  z-50 ">
                     <img
                       src={logo}
                       alt=""
-                      className="max-w-full max-h-full z-50"
+                      className="w-[180px] z-50 lg:w-[300px]"
                     />
                     <h2
-                      className="w-[100%] text-center mt-2"
+                      className="w-[100%]  mt-2"
                       style={{ color: hubSettings.category }}
                     >
                       {hubSettings.name}
@@ -566,6 +594,9 @@ function Main({ Rank, height, width }) {
                     goToLiked={getUsersLikedContent}
                     settings={hubSettings}
                     defaultLocation={true}
+                    searchItem={searchItem}
+                    setSearchItem={setSearchItem}
+                    activeIcon={active}
                   />
                 </div>
               )
@@ -581,6 +612,9 @@ function Main({ Rank, height, width }) {
                   goToLiked={getUsersLikedContent}
                   settings={hubSettings}
                   defaultLocation={true}
+                  searchItem={searchItem}
+                  setSearchItem={setSearchItem}
+                  activeIcon={active}
                 />
               </div>
             )}
@@ -595,36 +629,42 @@ function Main({ Rank, height, width }) {
               goHome={fetchAPI}
               goToLiked={getUsersLikedContent}
               settings={hubSettings}
+              searchItem={searchItem}
+              setSearchItem={setSearchItem}
+              activeIcon={active}
             />
           </div>
           <div className=" relative z-40 w-[90%] mx-auto">
-            <div className="">
-              <div className=" mt-[-130px] ">
-                <div className="">
-                  <h3
-                    className={`  uppercase font-roboto `}
-                    style={{ color: hubSettings.category }}
-                  >
-                    Most Viewed
-                  </h3>
-                  <Carousel responsive={responsive} keyBoardControl={true}>
-                    {topContent.map((value, i, f) => (
-                      <div>
-                        <Card
-                          type={true}
-                          Rank={i + 1}
-                          handleOpen={() => handleOpen(value)}
-                          content={value.name}
-                          id={value.id}
-                          imageUrl={`https://api.hubeei.skillzserver.com/public${value.thumbnail}`}
-                          settings={hubSettings}
-                        />
-                      </div>
-                    ))}
-                  </Carousel>
+            {hubSettings.topten == 1 ? (
+              <div className="">
+                <div className=" mt-[-130px] ">
+                  <div className="">
+                    <h3
+                      className={`  uppercase font-roboto `}
+                      style={{ color: hubSettings.category }}
+                    >
+                      Most Viewed
+                    </h3>
+                    <Carousel responsive={responsive} keyBoardControl={true}>
+                      {topContent.map((value, i, f) => (
+                        <div>
+                          <Card
+                            type={true}
+                            Rank={i + 1}
+                            handleOpen={() => handleOpen(value)}
+                            content={value.name}
+                            id={value.id}
+                            imageUrl={`${value.thumbnail}`}
+                            settings={hubSettings}
+                            liked={value.like}
+                          />
+                        </div>
+                      ))}
+                    </Carousel>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : null}
             {defaultContent ? (
               <div className=" w-[100%]">
                 {category.length > 0
@@ -648,7 +688,7 @@ function Main({ Rank, height, width }) {
                                   handleOpen={() => handleOpen(items)}
                                   title={items.name}
                                   id={items.id}
-                                  imageUrl={`https://api.hubeei.skillzserver.com/public${items.thumbnail}`}
+                                  imageUrl={`${items.thumbnail}`}
                                   liked={items.like}
                                   settings={hubSettings}
                                 />
@@ -672,24 +712,33 @@ function Main({ Rank, height, width }) {
             ) : (
               <div className=" w-[86%]" style={{ margin: "-20px auto" }}>
                 <h3 className="text-white font-roboto">Liked Content </h3>
-                <Carousel
-                  responsive={responsive}
-                  infinite={true}
-                  keyBoardControl={true}
-                >
-                  {category.map((items, i) => {
-                    return (
-                      <Card
-                        handleOpen={() => handleOpen(items)}
-                        title={items.name}
-                        id={items.id}
-                        imageUrl={`https://api.hubeei.skillzserver.com/public${items.thumbnail}`}
-                        liked={items.like}
-                        settings={hubSettings}
-                      />
-                    );
-                  })}
-                </Carousel>
+                {category.length > 0 ? (
+                  <Carousel
+                    responsive={responsive}
+                    infinite={true}
+                    keyBoardControl={true}
+                  >
+                    {category.map((items, i) => {
+                      return (
+                        <Card
+                          handleOpen={() => handleOpen(items)}
+                          title={items.name}
+                          id={items.id}
+                          imageUrl={`${items.thumbnail}`}
+                          liked={items.like}
+                          settings={hubSettings}
+                        />
+                      );
+                    })}
+                  </Carousel>
+                ) : (
+                  <Typography
+                    style={{ color: hubSettings.content }}
+                    variant="h4"
+                  >
+                    No Liked Content
+                  </Typography>
+                )}
               </div>
             )}
           </div>

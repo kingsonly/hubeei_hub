@@ -20,6 +20,34 @@ const Cards = ({
   const [shareIcon, setShareIcon] = useState(false);
   const [isLiked, setIsLiked] = useState(liked);
 
+  const [imageUrlSize, setImageUrlSize] = useState("");
+  const [imageUrlSizeHalf, setImageUrlSizeHalf] = useState("");
+
+  useEffect(() => {
+    // Define image URLs for different screen sizes
+    const smallImageUrl = "150x100_";
+    const largeImageUrl = "300x200_";
+
+    const smallImageUrlHalf = "75x100_";
+    const largeImageUrlHalf = "150x200_";
+
+    // Function to update image URL based on screen size
+    const updateImageUrl = () => {
+      const screenSize = window.innerWidth;
+
+      console.log("i am screen size", screenSize);
+      setImageUrlSize(screenSize <= 768 ? smallImageUrl : largeImageUrl);
+      setImageUrlSizeHalf(
+        screenSize <= 768 ? smallImageUrlHalf : largeImageUrlHalf
+      );
+    };
+
+    // Update image URL on component mount and window resize
+    updateImageUrl();
+    window.addEventListener("resize", updateImageUrl);
+    return () => window.removeEventListener("resize", updateImageUrl);
+  }, []);
+
   const postUserToServer = async () => {
     const user = localStorage.getItem("user");
     const headers = {
@@ -28,7 +56,7 @@ const Cards = ({
 
     try {
       const response = await axios.get(
-        "https://api.hubeei.skillzserver.com/api/content/like-un-like/" + id,
+        `${process.env.REACT_APP_BACKEND_API}/api/content/like-un-like/${id}`,
         { headers }
       );
       if (response.data.status === "success") {
@@ -52,9 +80,20 @@ const Cards = ({
     await postUserToServer();
   };
 
+  // const cardStyle = {
+  //   backgroundImage: `url(${imageUrl})`,
+  //   backgroundSize: "100% 100%",
+  // };
+  const [none, folder1, folder2, image] = imageUrl.split("/");
+
   const cardStyle = {
-    backgroundImage: `url(${imageUrl})`,
-    backgroundSize: "100% 100%",
+    backgroundSize: "contain", // Default background size
+    backgroundImage: `url(${process.env.REACT_APP_BACKEND_API}/${folder1}/${folder2}/${imageUrlSize}${image})`,
+  };
+
+  const cardStyleHalf = {
+    backgroundSize: "contain", // Default background size
+    backgroundImage: `url(${process.env.REACT_APP_BACKEND_API}/${folder1}/${folder2}/${imageUrlSizeHalf}${image})`,
   };
 
   const openShareDialog = (e) => {
@@ -78,33 +117,33 @@ const Cards = ({
   return (
     <div className="w-[100%] z-40">
       {type ? (
-        <div className="flex   sm:w-[350px] mb-4 h-[100%] w-[150px]">
-          <div className="sm:w-[50%] h-[40%]">
+        <div className=" md:w-[200px] md:h-[130px] flex lg:w-[350px] mb-4 h-[100%] w-[150px]">
+          <div className="md:w-[50%] lg:w-[50%] md:h-[100%] md:flex md:justify-end">
             <RankIcon
-              className="w-[80px] h-[100px] sm:w-[200px] sm:h-[200px] "
+              className="w-[80px] h-[100px] md:w-[90px] md:h-[120px] lg:w-[100px] lg:h-[120px] "
               Rank={Rank}
               width="60px"
               height="100px"
             />
           </div>
-          <div className="sm:w-[50%]">
+          <div className="md:w-[50%] lg:w-[50%]">
             <div
               onClick={handleCardClick}
               className={`relative h-[100%] bg-no-repeat group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10  mb-2 ml-0`}
-              style={cardStyle}
+              style={cardStyleHalf}
             >
               <div>
                 <div className=" h-10px">
                   <div className="relative">
                     <div className="relative top-0 right-0">
                       <div className="w-[82px]">
-                        <img src={logo} className="sm:w-[20px] w-[10px]" />
+                        <img src={logo} className="md:w-[20px] w-[10px]" />
                       </div>
                     </div>
                   </div>
                 </div>
                 {!shareIcon ? (
-                  <div className="px-2 rounded-lg flex items-center justify-center absolute bg-slate-600 h-[40px] bottom-0 right-0 sm:mb-6 w-[90%] sm:mr-4 sm:w-[80px]">
+                  <div className="px-2 rounded-lg flex items-center justify-center absolute bg-slate-600 h-[40px] bottom-0 right-0 lg:mb-6 w-[90%] lg:mr-4 lg:w-[80px]">
                     <div className=" w-[100%]  flex justify-between  ">
                       <div className="">
                         <div className="">
@@ -131,7 +170,7 @@ const Cards = ({
                   </div>
                 ) : null}
                 {shareIcon ? (
-                  <div className="px-2 rounded-lg flex items-center justify-center absolute h-[40px] bottom-0 right-0 sm:mb-6 w-[100%]  ">
+                  <div className="px-2 rounded-lg flex items-center justify-center absolute h-[40px] bottom-0 right-0 lg:mb-6 w-[100%]  ">
                     <ShareDialog close={closeShareDialog} id={id} />
                   </div>
                 ) : null}
@@ -144,7 +183,7 @@ const Cards = ({
           <div>
             <div
               onClick={handleCardClick}
-              className={`sm:h-[200px] sm:w-[300px] w-[150px] h-[100px]  relative  bg-no-repeat  border  group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10 border-fuchsia-800  border-2 border-blue mb-2`}
+              className={`md:w-[200px] md:h-[130px] lg:h-[200px] lg:w-[300px] w-[150px] h-[100px]  relative  bg-no-repeat   group cursor-pointer overflow-hidden transition-transform duration-300 transform hover:scale-105 hover:z-10   mb-2`}
               style={cardStyle}
             >
               <div>
@@ -152,13 +191,13 @@ const Cards = ({
                   <div className="relative">
                     <div className="relative top-0 right-0">
                       <div className="w-[82px]">
-                        <img src={logo} className="sm:w-[20px] w-[10px]" />
+                        <img src={logo} className="md:w-[20px] w-[10px]" />
                       </div>
                     </div>
                   </div>
                 </div>
                 {!shareIcon ? (
-                  <div className="px-2 rounded-lg flex items-center justify-center absolute bg-slate-600 h-[40px] bottom-0 right-0 sm:mb-6 w-[50%] sm:mr-4 sm:w-[80px]">
+                  <div className="px-2 rounded-lg flex items-center justify-center absolute bg-slate-600 h-[40px] bottom-0 right-0 lg:mb-6 w-[50%] lg:mr-4 lg:w-[80px]">
                     <div className=" w-[100%]  flex justify-between  ">
                       <div className="">
                         <div className="">
@@ -185,7 +224,7 @@ const Cards = ({
                   </div>
                 ) : null}
                 {shareIcon ? (
-                  <div className="px-2 rounded-lg flex items-center justify-center absolute h-[40px] bottom-0 right-0 sm:mb-6 w-[100%]  ">
+                  <div className="px-2 rounded-lg flex items-center justify-center absolute h-[40px] bottom-0 right-0 lg:mb-6 w-[100%]  ">
                     <ShareDialog close={closeShareDialog} id={id} />
                   </div>
                 ) : null}

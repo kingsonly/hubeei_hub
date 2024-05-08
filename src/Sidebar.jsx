@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -19,9 +19,16 @@ function SideIcons({
   goToLiked,
   settings,
   defaultLocation = false,
+  searchItem,
+  setSearchItem,
+  activeIcon,
 }) {
-  const [searchItem, setSearchItem] = useState("");
   const [loginStatus, setLoginStatus] = useState(localStorage.getItem("token"));
+  const [active, setActive] = useState();
+
+  useEffect(() => {
+    setActive(activeIcon);
+  }, [activeIcon]);
 
   const style = {
     position: "absolute",
@@ -120,29 +127,53 @@ function SideIcons({
       {!defaultLocation ? (
         <div className="">
           <div className=" w-[50px] z-60 bg-[#000]/80 rounded">
-            <div className={iconSize} onClick={() => goHome()}>
-              <HomeIcon className="text-white cursor-pointer ml-2 mt-3" />
+            <div className={`${iconSize}`} onClick={() => goHome()}>
+              <HomeIcon
+                className="cursor-pointer ml-2 mt-3"
+                style={{
+                  color:
+                    active == "home" ? settings.content : settings.category,
+                }}
+              />
             </div>
             {settings.search == 1 ? (
-              <div className={iconSize}>
+              <div className={`${iconSize}`}>
                 <SearchIcon
-                  className={`text-white cursor-pointer ml-2 mt-2 ${
+                  className={` cursor-pointer ml-2 mt-2 ${
                     searchIcon ? "active" : ""
                   }`}
                   onClick={setSearchIcon}
+                  style={{
+                    color:
+                      active == "search" ? settings.content : settings.category,
+                  }}
                 />
               </div>
             ) : null}
-            <div className={iconSize} onClick={() => goToLiked()}>
-              <FavoriteBorderIcon className="text-white cursor-pointer ml-2 mt-2" />
+            <div className={`${iconSize}`} onClick={() => goToLiked()}>
+              <FavoriteBorderIcon
+                className=" cursor-pointer ml-2 mt-2"
+                style={{
+                  color:
+                    active == "liked" ? settings.content : settings.category,
+                }}
+              />
             </div>
             {settings.registration == 1 && loginStatus != null ? (
-              <div className={iconSize}>
-                <AccountCircleIcon className="text-white cursor-pointer ml-2 mt-2" />
+              <div className={`${iconSize}`}>
+                <AccountCircleIcon
+                  className="cursor-pointer ml-2 mt-2"
+                  style={{
+                    color:
+                      active == "account"
+                        ? settings.content
+                        : settings.category,
+                  }}
+                />
               </div>
             ) : null}
             {settings.registration == 1 && loginStatus != null ? (
-              <div className={iconSize} onClick={logout}>
+              <div className={`${iconSize}`} onClick={logout}>
                 <ExitToAppRoundedIcon className="text-white cursor-pointer ml-2 mt-2" />
               </div>
             ) : null}
@@ -150,18 +181,18 @@ function SideIcons({
         </div>
       ) : (
         <div>
-          <div className="sm:mb-[180px] sm:h-[80px] h-[300px] ">
+          <div className="lg:mb-[180px] lg:h-[80px] h-[300px] ">
             <div
               style={{ color: settings.category }}
-              className="sm:px-[50px] font-roboto text-[18px] sm:flex sm:w-[48%] sm:h-[100%] sm:justify-between sm:items-center"
+              className="lg:px-[50px] font-roboto text-[18px] lg:flex lg:w-[48%] lg:h-[100%] lg:justify-between lg:items-center"
             >
               <div
                 onClick={() => goHome()}
-                className="sm:block flex justify-center"
+                className="lg:block flex justify-center"
               >
-                <img src={logo} className="sm:w-[200px] w-[250px]" />
+                <img src={logo} className="lg:w-[200px] w-[250px]" />
               </div>
-              <div className="sm:w-[100%] flex justify-around mt-4">
+              {/* <div className="lg:w-[100%] flex justify-around mt-4">
                 <div className="cursor-pointer" onClick={() => goHome()}>
                   Home
                 </div>
@@ -171,7 +202,7 @@ function SideIcons({
                 <div onClick={setSearchIcon} className="cursor-pointer">
                   Search
                 </div>
-              </div>
+              </div> */}
             </div>
             <div></div>
           </div>

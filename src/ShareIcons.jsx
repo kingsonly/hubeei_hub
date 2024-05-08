@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { EmailIcon, EmailShareButton } from "react-share";
 import { WhatsappIcon, WhatsappShareButton } from "react-share";
 import { TwitterIcon, TwitterShareButton } from "react-share";
@@ -8,6 +8,21 @@ import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 
 const ShareDialog = ({ close, id }) => {
   const [link, setLink] = useState(window.location.href);
+
+  useEffect(() => {
+    checkLocal();
+  }, []);
+
+  const checkLocal = () => {
+    let hubUrl = window.location.href.split(".")[0];
+    let local = window.location.href.split(".")[1].split(":")[0];
+    if (local == "localhost") {
+      setLink(`${hubUrl}.${window.location.href.split(".")[1].split("?")[0]}`);
+    } else {
+      setLink(`${hubUrl}.${process.env.REACT_APP_SHARE_LINK}`);
+    }
+    console.log("i am local ", local);
+  };
   const handleClose = (e) => {
     e.stopPropagation(); // Stop event propagation
     close();
@@ -28,13 +43,13 @@ const ShareDialog = ({ close, id }) => {
 
   return (
     <div
-      className=" sm:flex-row sm:items-center flex flex-col-reverse overflow-auto   justify-between items-end    w-[100%]  rounded "
+      className=" lg:flex-row lg:items-center flex flex-col-reverse md:flex-row overflow-auto   justify-between items-end    w-[100%]  rounded "
       onClick={handleShareClick}
     >
       <div className="">
         <WhatsappShareButton url={`${link}?${id}`}>
           <WhatsappIcon
-            className="sm:w-[30px] w-[20px] sm:h-[30px] h-[20px]"
+            className="lg:w-[30px] w-[20px] lg:h-[30px] h-[20px]"
             round={true}
           />
         </WhatsappShareButton>
@@ -43,7 +58,7 @@ const ShareDialog = ({ close, id }) => {
       <div className="">
         <TwitterShareButton url={`${link}?${id}`}>
           <TwitterIcon
-            className="sm:w-[30px] w-[20px] sm:h-[30px] h-[20px]"
+            className="lg:w-[30px] w-[20px] lg:h-[30px] h-[20px]"
             round={true}
           />
         </TwitterShareButton>
@@ -51,7 +66,7 @@ const ShareDialog = ({ close, id }) => {
       <div className="">
         <EmailShareButton url={`${link}?${id}`}>
           <EmailIcon
-            className="sm:w-[30px] w-[20px] sm:h-[30px] h-[20px]"
+            className="lg:w-[30px] w-[20px] lg:h-[30px] h-[20px]"
             round={true}
           />
         </EmailShareButton>
@@ -59,17 +74,17 @@ const ShareDialog = ({ close, id }) => {
       <div className="">
         <FacebookShareButton url={`${link}?${id}`}>
           <FacebookIcon
-            className="sm:w-[30px] w-[20px] sm:h-[30px] h-[20px]"
+            className="lg:w-[30px] w-[20px] lg:h-[30px] h-[20px]"
             round={true}
           />
         </FacebookShareButton>
       </div>
       <div className="" onClick={() => copy()}>
-        <ContentCopyOutlinedIcon className="sm:w-[30px] w-[20px] text-yellow-500 sm:h-[30px] h-[20px]" />
+        <ContentCopyOutlinedIcon className="lg:w-[30px] w-[20px] text-yellow-500 lg:h-[30px] h-[20px]" />
       </div>
 
       <div className="cursor-pointer text-red-500 " onClick={handleClose}>
-        <ClearOutlinedIcon className="sm:w-[30px] w-[20px] sm:h-[30px] h-[20px]" />
+        <ClearOutlinedIcon className="lg:w-[30px] w-[20px] lg:h-[30px] h-[20px]" />
       </div>
     </div>
   );

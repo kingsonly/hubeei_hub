@@ -1,11 +1,11 @@
+import "./App.css";
+import Main from "./HomePage";
+import { pdfjs } from "react-pdf";
 
-import './App.css';
-import Main from './HomePage';
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 function App() {
-  return (
-      <Main />
-  )
+  return <Main />;
 }
 
 export default App;

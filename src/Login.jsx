@@ -29,7 +29,7 @@ export default function Login(props) {
 
   return (
     <div className="flex w-[100%]  justify-center h-[100%] items-center">
-      <div className="sm:w-[60%] w-[100%] px-4">
+      <div className="lg:w-[60%] w-[100%] px-4">
         <div className="flex justify-center">
           <div style={{ color: settings.category }}>
             <Typography variant="h3" className="font-roboto">
@@ -78,7 +78,7 @@ export default function Login(props) {
             }}
           />
         </div>
-        <div className="flex flex-col-reverse sm:flex-row sm:justify-between mt-4">
+        <div className="flex flex-col-reverse lg:flex-row lg:justify-between mt-4">
           <div>
             <ActionButton handleClick={displaySignup} withBorder={true}>
               Sign Up

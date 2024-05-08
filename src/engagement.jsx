@@ -153,7 +153,7 @@ function Engagement({ content }) {
       let answers = JSON.stringify(serverData);
       axios
         .post(
-          `https://api.hubeei.skillzserver.com/api/content/respond-to-engagment/${user}`,
+          `${process.env.REACT_APP_BACKEND_API}/api/content/respond-to-engagment/${user}`,
           { answers }
         )
         .then((response) => {
@@ -183,7 +183,7 @@ function Engagement({ content }) {
     let headers = { user: user };
     await axios
       .get(
-        `https://api.hubeei.skillzserver.com/api/content/engagmet-view/${id}`,
+        `${process.env.REACT_APP_BACKEND_API}/api/content/engagmet-view/${id}`,
         {
           headers,
         }
